@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html class="light" lang="es">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Mi Carnet Digital - Conecta Maracaibo</title>
+    
+    <link href="https://fonts.googleapis.com" rel="preconnect"/>
+    <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin/>
+    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700;900&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <script type="text/javascript" src="https://unpkg.com/qr-code-styling@1.5.0/lib/qr-code-styling.js"></script>
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: { extend: { colors: { "primary": "#2c5aa0" }, fontFamily: { "display": ["Public Sans", "sans-serif"] } } }
+        }
+    </script>
+    <style>
+        body { font-family: 'Public Sans', sans-serif; }
+        .carnet-bg {
+            background: linear-gradient(135deg, #2c5aa0 0%, #1e4580 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        .carnet-bg::before {
+            content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 60%);
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body class="bg-[#F5F7FA] text-[#121417] min-h-screen flex flex-col">
+
+    <div id="layout-header"></div>
+
+    <main class="flex-1 mt-20 flex items-center justify-center p-6">
+        
+        <div class="w-full max-w-4xl grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+            
+            <div class="order-2 md:order-1">
+                <span class="bg-primary/10 text-primary text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider mb-4 inline-block">Identidad Digital</span>
+                <h1 class="text-4xl font-black mb-4">Tu Llave de Acceso</h1>
+                <p class="text-gray-500 text-lg mb-8 leading-relaxed">
+                    Este carnet valida tu identidad. Descárgalo o imprímelo para presentarlo en actividades oficiales o permitir que otros lo escaneen.
+                </p>
+                
+                <div class="flex flex-row gap-3 w-full">
+                    <button onclick="imprimirCarnet()" class="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-white border border-gray-200 text-gray-700 font-bold rounded-xl hover:border-primary hover:text-primary transition-all shadow-sm">
+                        <span class="material-symbols-outlined">print</span> Imprimir
+                    </button>
+                    <button onclick="descargarCarnet()" class="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-white border border-gray-200 text-gray-700 font-bold rounded-xl hover:border-primary hover:text-primary transition-all shadow-sm">
+                        <span class="material-symbols-outlined">download</span> Descargar
+                    </button>
+                </div>
+
+                <div class="mt-8 pt-8 border-t border-gray-200">
+                    <p class="text-sm text-gray-400 mb-3 font-bold uppercase tracking-wide">Herramientas</p>
+                    <a href="escanear.html" class="flex items-center justify-center gap-3 bg-gray-900 hover:bg-black text-white px-6 py-4 rounded-xl font-bold transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-1">
+                        <span class="material-symbols-outlined text-2xl">qr_code_scanner</span>
+                        <div>
+                            <span class="block text-sm leading-none opacity-80 font-normal">Validar Ciudadano</span>
+                            <span class="block text-lg leading-none mt-1">Escanear otro QR</span>
+                        </div>
+                    </a>
+                </div>
+            </div>
+
+            <div class="order-1 md:order-2 flex justify-center">
+                <div id="carnet-completo" class="relative bg-white w-full max-w-[350px] rounded-3xl shadow-2xl overflow-hidden border border-gray-100 transform transition-transform hover:scale-[1.02] duration-500">
+                    
+                    <div class="carnet-bg h-32 p-6 flex justify-between items-start">
+                        <div class="text-white">
+                            <p class="text-xs opacity-80 uppercase tracking-widest font-bold">Voluntario</p>
+                            <p class="text-lg font-black tracking-tight">Conecta Maracaibo</p>
+                        </div>
+                        <span class="material-symbols-outlined text-white/50 text-4xl">handshake</span>
+                    </div>
+
+                    <div class="px-8 pb-8 -mt-12 relative z-10">
+                        <div class="flex justify-center mb-6">
+                            <div class="w-24 h-24 rounded-full border-4 border-white shadow-lg bg-gray-200 overflow-hidden bg-white">
+                                <img id="carnet-foto" src="assets/avatars/avatar1.png" class="w-full h-full object-cover" onerror="this.src='assets/avatars/avatar1.png'" crossorigin="anonymous">
+                            </div>
+                        </div>
+
+                        <div class="text-center mb-6">
+                            <h2 id="carnet-nombre" class="text-xl font-black text-gray-900 leading-tight">Cargando...</h2>
+                            <p id="carnet-rol" class="text-sm text-primary font-bold uppercase mt-1">...</p>
+                            <p id="carnet-cedula" class="text-xs text-gray-400 mt-2 font-mono tracking-wider">ID: ...</p>
+                        </div>
+
+                        <div class="flex justify-center mb-4">
+                            <div id="qr-container" class="p-2 bg-white border border-gray-100 rounded-xl shadow-inner flex items-center justify-center"></div>
+                        </div>
+
+                        <p class="text-[10px] text-center text-gray-400 px-4 pb-4">
+                            Válido para actividades oficiales de la Alcaldía y organizaciones aliadas.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <script src="js/layout.js"></script>
+    <script>
+        let qrCodeObj = null;
+
+        async function cargarCarnet() {
+            const token = localStorage.getItem('token');
+            if(!token) window.location.href = 'login.html';
+
+            try {
+                const res = await fetch('backend/api/usuarios.php?action=perfil', {
+                    headers: {'Authorization': 'Bearer ' + token}
+                });
+                const json = await res.json();
+
+                if(json.ok) {
+                    // *** CORRECCIÓN PRINCIPAL: json.data EN VEZ DE json.usuario ***
+                    const u = json.data; 
+                    
+                    document.getElementById('carnet-nombre').innerText = u.nombre;
+                    document.getElementById('carnet-cedula').innerText = "ID: " + (u.cedula || 'N/A');
+                    document.getElementById('carnet-rol').innerText = u.rol ? u.rol.toUpperCase() : 'CIUDADANO';
+                    if(u.foto_perfil) document.getElementById('carnet-foto').src = u.foto_perfil;
+
+                    // Datos para el QR (JSON simple)
+                    const qrData = JSON.stringify({
+                        id: u.id_usuario,
+                        rol: u.rol
+                    });
+
+                    // Generar QR
+                    if (typeof QRCodeStyling !== 'undefined') {
+                        qrCodeObj = new QRCodeStyling({
+                            width: 160,
+                            height: 160,
+                            type: "svg",
+                            data: qrData,
+                            dotsOptions: { color: "#2c5aa0", type: "rounded" },
+                            backgroundOptions: { color: "#ffffff" },
+                            imageOptions: { crossOrigin: "anonymous", margin: 5 }
+                        });
+
+                        const container = document.getElementById("qr-container");
+                        container.innerHTML = ""; 
+                        qrCodeObj.append(container);
+                    }
+                }
+            } catch(e) {
+                console.error("Error en cargarCarnet:", e);
+                document.getElementById('carnet-nombre').innerText = "Error de conexión";
+            }
+        }
+
+        async function descargarCarnet() {
+            const carnetElement = document.getElementById('carnet-completo');
+            if (!carnetElement) return;
+
+            try {
+                // html2canvas necesita un pequeño delay a veces para renderizar imágenes externas
+                const canvas = await html2canvas(carnetElement, {
+                    scale: 3, 
+                    useCORS: true, 
+                    backgroundColor: null 
+                });
+                const image = canvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
+                const link = document.createElement('a');
+                link.download = 'mi-carnet.png';
+                link.href = image;
+                link.click();
+            } catch (error) {
+                console.error(error);
+                alert("Error al generar imagen. Intente de nuevo.");
+            }
+        }
+
+        async function imprimirCarnet() {
+            const carnetElement = document.getElementById('carnet-completo');
+            if (!carnetElement) return;
+
+            try {
+                const canvas = await html2canvas(carnetElement, {
+                    scale: 3,
+                    useCORS: true,
+                    backgroundColor: "#ffffff" 
+                });
+                const imgData = canvas.toDataURL('image/png');
+                const printWindow = window.open('', '_blank');
+                printWindow.document.write('<html><head><title>Imprimir Carnet</title>');
+                printWindow.document.write('<style>body{margin:0;display:flex;justify-content:center;align-items:center;height:100vh;background:#f0f0f0;} img{max-width:100%; height:auto; border: 1px dashed #ccc;}</style>');
+                printWindow.document.write('</head><body>');
+                printWindow.document.write('<img src="' + imgData + '" onload="window.print();window.close()">');
+                printWindow.document.write('</body></html>');
+                printWindow.document.close();
+            } catch (error) {
+                console.error(error);
+                alert("Error al imprimir.");
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', cargarCarnet);
+    </script>
+</body>
+</html>

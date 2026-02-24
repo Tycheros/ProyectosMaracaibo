@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html class="light" lang="es">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Escanear Carnet - Conecta Maracaibo</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;600;700&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+    
+    <script src="https://unpkg.com/html5-qrcode"></script>
+
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: { "primary": "#2c5aa0", "background-light": "#F5F7FA", "background-dark": "#13181f" },
+                    fontFamily: { "display": ["Public Sans", "sans-serif"] },
+                },
+            },
+        }
+    </script>
+
+    <style>
+        body { font-family: 'Public Sans', sans-serif; }
+        #reader video { object-fit: cover; border-radius: 1.5rem; }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark min-h-screen flex flex-col text-gray-900 dark:text-white transition-colors duration-300">
+
+    <main class="flex-1 flex flex-col items-center justify-center px-6 relative">
+        
+        <button onclick="history.back()" class="absolute top-6 left-6 flex items-center gap-2 text-gray-500 dark:text-gray-400 hover:text-primary dark:hover:text-white transition-colors z-50 font-bold">
+            <span class="material-symbols-outlined">arrow_back</span> Volver
+        </button>
+
+        <div class="mb-8 text-center mt-10">
+            <h1 class="text-3xl font-black mb-2 text-[#2c5aa0]">Lectura de Carnet</h1>
+            <p class="text-gray-500 dark:text-gray-400 text-sm">Apunta la cámara al código QR.</p>
+        </div>
+
+        <div class="w-full max-w-sm aspect-square bg-black rounded-3xl overflow-hidden border-4 border-white dark:border-gray-700 shadow-2xl relative">
+            <div id="reader" class="w-full h-full"></div>
+            
+            <div class="absolute inset-0 border-[40px] border-black/40 pointer-events-none rounded-3xl"></div>
+            <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+                <div class="w-64 h-64 border-2 border-primary/80 rounded-2xl relative shadow-[0_0_20px_rgba(44,90,160,0.5)]">
+                    <div class="absolute top-0 left-0 w-6 h-6 border-t-4 border-l-4 border-white -mt-1 -ml-1"></div>
+                    <div class="absolute top-0 right-0 w-6 h-6 border-t-4 border-r-4 border-white -mt-1 -mr-1"></div>
+                    <div class="absolute bottom-0 left-0 w-6 h-6 border-b-4 border-l-4 border-white -mb-1 -ml-1"></div>
+                    <div class="absolute bottom-0 right-0 w-6 h-6 border-b-4 border-r-4 border-white -mb-1 -mr-1"></div>
+                </div>
+            </div>
+        </div>
+        
+        <p id="status-msg" class="mt-8 text-gray-400 text-xs font-medium animate-pulse">Iniciando cámara...</p>
+
+        <div class="fixed bottom-8 flex gap-4 z-50">
+            <button id="btn-flash" onclick="toggleFlash()" class="flex items-center justify-center w-14 h-14 bg-gray-800 hover:bg-gray-700 text-yellow-400 rounded-full shadow-lg transition-all transform active:scale-95 hidden border border-gray-600">
+                <span class="material-symbols-outlined text-2xl" id="icon-flash">flash_off</span>
+            </button>
+
+            <button id="btn-switch-camera" onclick="switchCamera()" class="flex items-center gap-2 bg-primary hover:bg-[#1e4580] text-white px-6 py-3 rounded-full shadow-lg shadow-primary/30 transition-all transform active:scale-95 hidden font-bold">
+                <span class="material-symbols-outlined">flip_camera_ios</span>
+                <span class="hidden sm:inline">Voltear</span>
+            </button>
+        </div>
+
+    </main>
+
+    <script>
+        let html5QrcodeScanner;
+        let currentCameraId = null;
+        let cameras = [];
+        let isFlashOn = false;
+        let isRedirecting = false; // VARIABLE DE BLOQUEO
+
+        async function initScanner() {
+            try {
+                cameras = await Html5Qrcode.getCameras();
+                if (cameras && cameras.length > 0) {
+                    // Intentar usar cámara trasera
+                    currentCameraId = cameras[cameras.length - 1].id; 
+                    
+                    if (cameras.length > 1) {
+                        document.getElementById('btn-switch-camera').classList.remove('hidden');
+                    }
+                    startCamera(currentCameraId);
+                } else {
+                    mostrarError("No se encontraron cámaras.");
+                }
+            } catch (err) {
+                console.error(err);
+                mostrarError("Da permiso para usar la cámara.");
+            }
+        }
+
+        function startCamera(cameraId) {
+            html5QrcodeScanner = new Html5Qrcode("reader");
+            html5QrcodeScanner.start(
+                cameraId, 
+                { fps: 10, qrbox: { width: 250, height: 250 }, aspectRatio: 1.0 },
+                onScanSuccess,
+                onScanFailure
+            ).then(() => {
+                const msg = document.getElementById('status-msg');
+                msg.innerText = "Escaneando...";
+                msg.classList.remove('animate-pulse', 'text-red-500');
+                msg.classList.add('text-primary');
+                checkFlashCapability();
+            }).catch(err => {
+                mostrarError("Error al iniciar cámara.");
+            });
+        }
+
+        function onScanSuccess(decodedText, decodedResult) {
+            // 1. BLOQUEO: Si ya estamos redirigiendo, ignorar escaneos posteriores
+            if (isRedirecting) return;
+
+            let idUsuario = null;
+
+            // Intentar leer JSON
+            try {
+                const data = JSON.parse(decodedText);
+                if (data.id) idUsuario = data.id;
+            } catch (e) {
+                // Intentar leer texto simple "UID:123"
+                if (decodedText.startsWith("UID:")) {
+                    idUsuario = decodedText.split(':')[1];
+                }
+            }
+
+            if (idUsuario) {
+                isRedirecting = true; // Activar bloqueo
+
+                // Feedback visual
+                const statusMsg = document.getElementById('status-msg');
+                statusMsg.innerText = "¡Validado! Procesando...";
+                statusMsg.className = "mt-8 text-green-600 font-black text-lg animate-bounce";
+                
+                if (navigator.vibrate) navigator.vibrate(200);
+
+                // 2. DETENER ESCÁNER Y REDIRIGIR
+                // Usamos pause() primero para congelar la imagen inmediatamente
+                try {
+                    html5QrcodeScanner.pause();
+                } catch(e) {}
+
+                // Pequeño delay para que el usuario vea el mensaje "Validado"
+                setTimeout(() => {
+                    // Usamos replace para que al dar "Atrás" no vuelva al escáner en bucle
+                    window.location.replace(`perfil-publico.html?id=${idUsuario}`);
+                }, 500);
+            }
+        }
+
+        function onScanFailure(error) {
+            // No hacer nada para no saturar la consola
+        }
+
+        // --- Funciones Auxiliares (Flash, Camara, Error) ---
+
+        function checkFlashCapability() {
+            try {
+                const capabilities = html5QrcodeScanner.getRunningTrackCameraCapabilities();
+                const btnFlash = document.getElementById('btn-flash');
+                if (capabilities.torchFeature().isSupported()) btnFlash.classList.remove('hidden');
+                else btnFlash.classList.add('hidden');
+                isFlashOn = false; updateFlashIcon();
+            } catch (e) {}
+        }
+
+        async function toggleFlash() {
+            try {
+                isFlashOn = !isFlashOn;
+                await html5QrcodeScanner.applyVideoConstraints({ advanced: [{ torch: isFlashOn }] });
+                updateFlashIcon();
+            } catch (err) { isFlashOn = !isFlashOn; }
+        }
+
+        function updateFlashIcon() {
+            const icon = document.getElementById('icon-flash');
+            const btn = document.getElementById('btn-flash');
+            if (isFlashOn) {
+                icon.innerText = "flash_on";
+                btn.classList.add('bg-yellow-100', 'text-yellow-600');
+                btn.classList.remove('bg-gray-800', 'text-yellow-400');
+            } else {
+                icon.innerText = "flash_off";
+                btn.classList.add('bg-gray-800', 'text-yellow-400');
+                btn.classList.remove('bg-yellow-100', 'text-yellow-600');
+            }
+        }
+
+        async function switchCamera() {
+            if (cameras.length < 2) return;
+            await html5QrcodeScanner.stop();
+            let currentIndex = cameras.findIndex(c => c.id === currentCameraId);
+            let nextIndex = (currentIndex + 1) % cameras.length;
+            currentCameraId = cameras[nextIndex].id;
+            startCamera(currentCameraId);
+        }
+
+        function mostrarError(texto) {
+            const msg = document.getElementById('status-msg');
+            msg.innerText = texto;
+            msg.className = "mt-8 text-red-500 font-bold text-sm";
+        }
+
+        document.addEventListener('DOMContentLoaded', initScanner);
+    </script>
+</body>
+</html>

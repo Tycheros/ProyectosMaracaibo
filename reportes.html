@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html class="light" lang="es">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Centro de Denuncias - Conecta Maracaibo</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700;900&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1" rel="stylesheet"/>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    // Eliminamos el azul primario de aquí para este archivo, usaremos 'danger' como principal
+                    colors: { "danger": "#d32f2f", "danger-dark": "#b71c1c" },
+                    fontFamily: { "display": ["Public Sans", "sans-serif"] }
+                }
+            }
+        }
+    </script>
+    <style> body { font-family: 'Public Sans', sans-serif; } </style>
+</head>
+<body class="bg-[#F5F7FA] text-slate-800 min-h-screen flex flex-col font-display">
+
+    <div id="layout-header"></div>
+
+    <main class="flex-grow w-full max-w-6xl mx-auto px-4 md:px-8 mt-28 mb-16">
+        
+        <a href="javascript:history.back()" class="inline-flex items-center gap-2 text-slate-500 hover:text-danger mb-6 font-bold text-sm transition group">
+            <span class="material-symbols-outlined text-lg group-hover:-translate-x-1 transition-transform">arrow_back</span>
+            Volver atrás
+        </a>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            
+            <div class="lg:col-span-2">
+                <div class="bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden">
+                    
+                    <div class="bg-red-100/80 p-8 border-b border-red-200">
+                        <div class="flex items-center gap-4 mb-2">
+                            <div class="bg-white p-3 rounded-xl shadow-sm text-danger">
+                                <span class="material-symbols-outlined text-3xl">report_problem</span>
+                            </div>
+                            <div>
+                                <h1 class="text-2xl font-black text-red-900 leading-tight">Centro de Reportes</h1>
+                                <p class="text-sm text-red-700/80 font-medium">Tu reporte es anónimo y confidencial.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="p-8">
+                        
+                        <div class="bg-red-50/30 border border-red-100 rounded-2xl p-5 mb-8 flex items-start gap-4">
+                            <div class="bg-white p-3 rounded-xl border border-red-100 text-danger/70">
+                                <span class="material-symbols-outlined text-2xl" id="icono-tipo">info</span>
+                            </div>
+                            <div class="flex-1">
+                                <p class="text-xs font-bold text-red-400 uppercase tracking-wider mb-1">Estás reportando:</p>
+                                <h3 id="titulo-objeto" class="text-lg font-bold text-slate-800 leading-snug mb-1">Cargando...</h3>
+                                <div class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-white border border-red-100 text-xs font-bold text-slate-500 capitalize">
+                                    <span class="w-2 h-2 rounded-full bg-danger"></span>
+                                    <span id="tipo-objeto-txt">Elemento</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <form id="form-reporte" class="space-y-6">
+                            <input type="hidden" name="tipo_objeto" id="tipo_objeto">
+                            <input type="hidden" name="id_objeto" id="id_objeto">
+
+                            <div>
+                                <label class="block text-sm font-bold text-slate-700 mb-2">Selecciona el problema</label>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                    <label class="cursor-pointer relative">
+                                        <input type="radio" name="motivo" value="inapropiado" class="peer sr-only">
+                                        <div class="p-4 rounded-xl border border-slate-200 hover:border-danger hover:bg-red-50 peer-checked:border-danger peer-checked:bg-red-50 peer-checked:text-danger transition-all h-full">
+                                            <div class="font-bold text-sm mb-1 flex items-center gap-2">
+                                                <span class="material-symbols-outlined text-lg">dangerous</span> Inapropiado
+                                            </div>
+                                            <p class="text-xs text-slate-500">Contenido ofensivo, violento o sexual.</p>
+                                        </div>
+                                    </label>
+                                    <label class="cursor-pointer relative">
+                                        <input type="radio" name="motivo" value="spam" class="peer sr-only">
+                                        <div class="p-4 rounded-xl border border-slate-200 hover:border-danger hover:bg-red-50 peer-checked:border-danger peer-checked:bg-red-50 peer-checked:text-danger transition-all h-full">
+                                            <div class="font-bold text-sm mb-1 flex items-center gap-2">
+                                                <span class="material-symbols-outlined text-lg">campaign</span> Spam / Publicidad
+                                            </div>
+                                            <p class="text-xs text-slate-500">Venta de productos, enlaces engañosos.</p>
+                                        </div>
+                                    </label>
+                                    <label class="cursor-pointer relative">
+                                        <input type="radio" name="motivo" value="fraude" class="peer sr-only">
+                                        <div class="p-4 rounded-xl border border-slate-200 hover:border-danger hover:bg-red-50 peer-checked:border-danger peer-checked:bg-red-50 peer-checked:text-danger transition-all h-full">
+                                            <div class="font-bold text-sm mb-1 flex items-center gap-2">
+                                                <span class="material-symbols-outlined text-lg">warning</span> Fraude / Estafa
+                                            </div>
+                                            <p class="text-xs text-slate-500">Solicitud de dinero sospechosa o falsa.</p>
+                                        </div>
+                                    </label>
+                                    <label class="cursor-pointer relative">
+                                        <input type="radio" name="motivo" value="falso" class="peer sr-only">
+                                        <div class="p-4 rounded-xl border border-slate-200 hover:border-danger hover:bg-red-50 peer-checked:border-danger peer-checked:bg-red-50 peer-checked:text-danger transition-all h-full">
+                                            <div class="font-bold text-sm mb-1 flex items-center gap-2">
+                                                <span class="material-symbols-outlined text-lg">fact_check</span> Información Falsa
+                                            </div>
+                                            <p class="text-xs text-slate-500">Datos incorrectos o desinformación.</p>
+                                        </div>
+                                    </label>
+                                    <label class="cursor-pointer relative md:col-span-2">
+                                        <input type="radio" name="motivo" value="otro" class="peer sr-only">
+                                        <div class="p-4 rounded-xl border border-slate-200 hover:border-danger hover:bg-red-50 peer-checked:border-danger peer-checked:bg-red-50 peer-checked:text-danger transition-all">
+                                            <div class="font-bold text-sm mb-1 flex items-center gap-2">
+                                                <span class="material-symbols-outlined text-lg">help</span> Otro motivo
+                                            </div>
+                                        </div>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-bold text-slate-700 mb-2">Describe la situación</label>
+                                <textarea name="descripcion" rows="5" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-4 text-sm focus:bg-white focus:border-danger focus:ring-danger transition-colors resize-none" placeholder="Por favor, danos más detalles para ayudarnos a entender el problema..." required></textarea>
+                                <p class="text-xs text-slate-400 mt-2 text-right">Mínimo 20 caracteres para procesar la solicitud.</p>
+                            </div>
+
+                            <div class="pt-6 border-t border-slate-100 flex items-center justify-end gap-3">
+                                <button type="button" onclick="history.back()" class="px-6 py-3 rounded-xl font-bold text-slate-500 hover:bg-slate-100 hover:text-slate-700 transition">
+                                    Cancelar
+                                </button>
+                                <button type="submit" id="btn-enviar" class="px-8 py-3 bg-danger hover:bg-danger-dark text-white font-bold rounded-xl shadow-lg shadow-red-200/50 transition transform active:scale-95 flex items-center gap-2">
+                                    <span class="material-symbols-outlined">send</span> Enviar Reporte
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="space-y-6">
+                
+                <div class="bg-white p-6 rounded-3xl shadow-sm border border-slate-200">
+                    <h3 class="font-bold text-slate-800 flex items-center gap-2 mb-4">
+                        <span class="material-symbols-outlined text-danger">gpp_maybe</span> Seguridad
+                    </h3>
+                    <p class="text-sm text-slate-500 leading-relaxed mb-4">
+                        Conecta Maracaibo toma muy en serio la seguridad de la comunidad. Nuestro equipo revisa cada reporte manualmente.
+                    </p>
+                    <ul class="text-sm text-slate-500 space-y-3">
+                        <li class="flex gap-2">
+                            <span class="material-symbols-outlined text-slate-400 text-lg shrink-0">check_circle</span>
+                            <span>Tu identidad se mantiene anónima.</span>
+                        </li>
+                        <li class="flex gap-2">
+                            <span class="material-symbols-outlined text-slate-400 text-lg shrink-0">check_circle</span>
+                            <span>Revisión en menos de 24 horas.</span>
+                        </li>
+                        <li class="flex gap-2">
+                            <span class="material-symbols-outlined text-danger text-lg shrink-0">warning</span>
+                            <span class="font-bold text-slate-700">Suspensión automática si hay múltiples reportes.</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="bg-[#fff5f5] p-6 rounded-3xl border border-red-100">
+                    <h3 class="font-black text-red-800 mb-4 text-sm uppercase tracking-wide flex items-center gap-2">
+                        <span class="material-symbols-outlined">error</span> Normas Críticas
+                    </h3>
+                    <div class="space-y-4">
+                        <div class="flex gap-3 items-start">
+                            <span class="font-black text-red-300 text-xl leading-none mt-1">1</span>
+                            <p class="text-sm font-medium text-red-900/80">Proyectos reales con impacto verificable. Cero tolerancia al fraude.</p>
+                        </div>
+                        <div class="flex gap-3 items-start">
+                            <span class="font-black text-red-300 text-xl leading-none mt-1">2</span>
+                            <p class="text-sm font-medium text-red-900/80">Cero tolerancia al discurso de odio, acoso o discriminación.</p>
+                        </div>
+                        <div class="flex gap-3 items-start">
+                            <span class="font-black text-red-300 text-xl leading-none mt-1">3</span>
+                            <p class="text-sm font-medium text-red-900/80">Prohibida estrictamente la solicitud de dinero en efectivo directo.</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <script src="js/layout.js"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const params = new URLSearchParams(window.location.search);
+            const tipo = params.get('tipo'); 
+            const id = params.get('id');
+            const titulo = params.get('titulo') || 'Contenido sin título';
+
+            if(!tipo || !id) {
+                alert("Error: Enlace de reporte inválido.");
+                history.back();
+                return;
+            }
+
+            document.getElementById('tipo_objeto').value = tipo;
+            document.getElementById('id_objeto').value = id;
+            document.getElementById('titulo-objeto').innerText = `"${decodeURIComponent(titulo)}"`;
+            
+            let tipoTexto = "Elemento";
+            let icono = "info";
+            if(tipo === 'proyecto') { tipoTexto = "Proyecto Comunitario"; icono = "engineering"; }
+            if(tipo === 'usuario') { tipoTexto = "Perfil de Usuario"; icono = "person"; }
+            if(tipo === 'donacion') { tipoTexto = "Donación / Solicitud"; icono = "volunteer_activism"; }
+
+            document.getElementById('tipo-objeto-txt').innerText = tipoTexto;
+            document.getElementById('icono-tipo').innerText = icono;
+
+            document.getElementById('form-reporte').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const token = localStorage.getItem('token');
+                
+                if (!token) {
+                    alert("Debes iniciar sesión para enviar un reporte.");
+                    window.location.href = 'login.html';
+                    return;
+                }
+
+                if(!document.querySelector('input[name="motivo"]:checked')) {
+                    alert("Por favor selecciona un motivo.");
+                    return;
+                }
+
+                const btn = document.getElementById('btn-enviar');
+                const originalText = btn.innerHTML;
+                btn.disabled = true;
+                btn.innerHTML = '<span class="material-symbols-outlined animate-spin text-lg">progress_activity</span> Procesando...';
+
+                const formData = new FormData(e.target);
+                const data = Object.fromEntries(formData.entries());
+
+                try {
+                    const res = await fetch('backend/api/reportes.php?action=crear', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': 'Bearer ' + token
+                        },
+                        body: JSON.stringify(data)
+                    });
+
+                    const json = await res.json();
+
+                    if (json.ok) {
+                        // Mensaje de éxito más serio (gris oscuro/rojo en vez de verde festivo)
+                        const container = document.querySelector('.lg\\:col-span-2 > div'); 
+                        container.innerHTML = `
+                            <div class="p-12 text-center flex flex-col items-center justify-center min-h-[400px]">
+                                <div class="bg-slate-100 text-slate-600 w-24 h-24 rounded-full flex items-center justify-center mb-6 shadow-sm">
+                                    <span class="material-symbols-outlined text-5xl">mark_email_read</span>
+                                </div>
+                                <h2 class="text-3xl font-black text-slate-800 mb-4">Reporte Registrado</h2>
+                                <p class="text-slate-600 font-medium mb-8 max-w-md mx-auto text-lg leading-relaxed">${json.msg}</p>
+                                <button onclick="history.back()" class="px-8 py-3 bg-slate-900 text-white rounded-xl font-bold shadow-lg hover:bg-black transition transform hover:-translate-y-1">
+                                    Volver al Sitio
+                                </button>
+                            </div>
+                        `;
+                    } else {
+                        alert("Error: " + json.msg);
+                        btn.disabled = false;
+                        btn.innerHTML = originalText;
+                    }
+                } catch (error) {
+                    console.error(error);
+                    alert("Error de conexión con el servidor.");
+                    btn.disabled = false;
+                    btn.innerHTML = originalText;
+                }
+            });
+        });
+    </script>
+</body>
+</html>

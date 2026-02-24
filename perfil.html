@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html class="light" lang="es">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Mi Perfil - Conecta Maracaibo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700;900&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: { "primary": "#2c5aa0", "success": "#4CAF50", "warning": "#FF9800", "secondary-gray": "#607D8B", "background-light": "#f5f7fa" },
+                    fontFamily: { "display": ["Public Sans", "sans-serif"] },
+                },
+            },
+        }
+    </script>
+    <style> body { font-family: 'Public Sans', sans-serif; } </style>
+</head>
+<body class="bg-background-light text-slate-900">
+
+    <div id="layout-header"></div>
+
+    <main class="max-w-6xl mx-auto w-full px-4 mt-24 mb-20">
+        
+        <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 mb-8 relative overflow-hidden">
+            <div class="absolute top-0 left-0 w-full h-24 bg-gradient-to-r from-blue-50 to-slate-50"></div>
+            
+            <div class="relative flex flex-col md:flex-row md:items-end justify-between gap-6 mt-4">
+                <div class="flex items-end gap-6">
+                    <div class="relative">
+                        <div class="size-24 md:size-32 rounded-full border-4 border-white shadow-md overflow-hidden bg-slate-100">
+                            <img id="profile-pic" alt="Avatar" class="w-full h-full object-cover" src="assets/avatars/avatar1.png"/>
+                        </div>
+                    </div>
+                    <div class="mb-2">
+                        <div class="flex items-center gap-3">
+                            <h1 class="text-2xl md:text-3xl font-bold text-slate-900" id="profile-name">Cargando...</h1>
+                            <span class="px-2.5 py-0.5 bg-primary/10 text-primary text-xs font-semibold rounded-full uppercase tracking-wider" id="profile-role">Usuario</span>
+                        </div>
+                        <p class="text-slate-500 text-sm flex items-center gap-1 mt-1">
+                            <span class="material-symbols-outlined text-lg">location_on</span>
+                            <span id="profile-location">Maracaibo</span>
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="flex gap-3 mb-2">
+                    <a href="ajustes.html" class="px-5 py-2.5 bg-slate-100 text-slate-700 font-bold text-sm rounded-lg hover:bg-slate-200 transition-colors flex items-center gap-2 border border-slate-200">
+                        <span class="material-symbols-outlined text-xl">settings</span> Ajustes
+                    </a>
+                    <a href="crear-proyecto.html" class="px-5 py-2.5 bg-primary text-white font-bold text-sm rounded-lg hover:bg-[#1e4580] transition-shadow shadow-md flex items-center gap-2">
+                        <span class="material-symbols-outlined text-xl">add_circle</span> Nuevo Proyecto
+                    </a>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-8 pt-8 border-t border-slate-100">
+                <div class="flex flex-col items-center p-4 rounded-xl bg-slate-50 border border-slate-100">
+                    <span class="text-2xl font-bold text-primary" id="stat-proyectos">0</span>
+                    <span class="text-xs font-semibold text-secondary-gray uppercase tracking-wide mt-1">Proyectos</span>
+                </div>
+                <div class="flex flex-col items-center p-4 rounded-xl bg-slate-50 border border-slate-100">
+                    <span class="text-2xl font-bold text-success" id="stat-donaciones">0</span>
+                    <span class="text-xs font-semibold text-secondary-gray uppercase tracking-wide mt-1">Donaciones</span>
+                </div>
+                <div class="flex flex-col items-center p-4 rounded-xl bg-slate-50 border border-slate-100">
+                    <span class="text-2xl font-bold text-slate-900" id="stat-solicitudes">0</span>
+                    <span class="text-xs font-semibold text-secondary-gray uppercase tracking-wide mt-1">Solicitudes</span>
+                </div>
+                <div class="flex flex-col items-center p-4 rounded-xl bg-slate-50 border border-slate-100">
+                    <span class="text-xl font-bold text-warning font-mono" id="stat-id">#0</span>
+                    <span class="text-xs font-semibold text-secondary-gray uppercase tracking-wide mt-1">ID Usuario</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="flex flex-wrap border-b border-slate-200 mb-8 gap-1">
+            <button onclick="switchTab('perfil')" id="tab-btn-perfil" class="tab-btn px-6 py-4 text-sm font-bold border-b-2 border-primary text-primary flex items-center gap-2 transition-all">
+                <span class="material-symbols-outlined text-xl">person</span> Mi Perfil
+            </button>
+            <button onclick="switchTab('proyectos')" id="tab-btn-proyectos" class="tab-btn px-6 py-4 text-sm font-bold border-b-2 border-transparent text-slate-500 hover:text-primary transition-all flex items-center gap-2">
+                <span class="material-symbols-outlined text-xl">folder_shared</span> Mis Proyectos
+            </button>
+            <button onclick="switchTab('donaciones')" id="tab-btn-donaciones" class="tab-btn px-6 py-4 text-sm font-bold border-b-2 border-transparent text-slate-500 hover:text-primary transition-all flex items-center gap-2">
+                <span class="material-symbols-outlined text-xl">volunteer_activism</span> Mis Donaciones
+            </button>
+            <button onclick="switchTab('solicitudes')" id="tab-btn-solicitudes" class="tab-btn px-6 py-4 text-sm font-bold border-b-2 border-transparent text-slate-500 hover:text-primary transition-all flex items-center gap-2">
+                <span class="material-symbols-outlined text-xl">diversity_1</span> Mis Solicitudes
+            </button>
+        </div>
+
+        <div id="view-perfil" class="view-section grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div class="lg:col-span-2 space-y-8">
+                <section class="bg-white rounded-xl p-6 shadow-sm border border-slate-200">
+                    <h3 class="text-lg font-bold text-slate-900 mb-6 flex items-center gap-2">
+                        <span class="material-symbols-outlined text-primary">contact_mail</span> Información Personal
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="space-y-1">
+                            <label class="text-xs font-bold text-secondary-gray uppercase">Correo Electrónico</label>
+                            <p class="text-slate-900 font-medium" id="info-email">...</p>
+                        </div>
+                        <div class="space-y-1">
+                            <label class="text-xs font-bold text-secondary-gray uppercase">Teléfono</label>
+                            <p class="text-slate-900 font-medium" id="info-phone">No registrado</p>
+                        </div>
+                        <div class="space-y-1 md:col-span-2">
+                            <label class="text-xs font-bold text-secondary-gray uppercase">Biografía</label>
+                            <p class="text-slate-600 leading-relaxed" id="info-bio">Sin biografía.</p>
+                        </div>
+                    </div>
+                </section>
+            </div>
+            <div class="space-y-8">
+                <section class="bg-white rounded-xl p-6 shadow-sm border border-slate-200">
+                    <h3 class="text-base font-bold text-slate-900 mb-4">Contacto Privado</h3>
+                    <div class="space-y-3">
+                        <div id="badge-whatsapp" class="hidden flex items-center gap-3 p-3 bg-green-50 rounded-lg text-green-800 text-sm font-bold">
+                            <span class="material-symbols-outlined">chat</span> Activo en WhatsApp
+                        </div>
+                        <div id="badge-telegram" class="hidden flex items-center gap-3 p-3 bg-blue-50 rounded-lg text-blue-800 text-sm font-bold">
+                            <span class="material-symbols-outlined">send</span> Activo en Telegram
+                        </div>
+                        <p class="text-xs text-slate-400">Esta información solo es visible para ti y para quien tú decidas contactar al donar.</p>
+                    </div>
+                </section>
+            </div>
+        </div>
+
+        <div id="view-proyectos" class="view-section hidden">
+            <div id="grid-mis-proyectos" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+            <div id="empty-proyectos" class="hidden text-center py-10 text-gray-400"><span class="material-symbols-outlined text-4xl mb-2">folder_off</span><p>No has creado proyectos aún.</p></div>
+        </div>
+
+        <div id="view-donaciones" class="view-section hidden">
+            <div id="grid-mis-donaciones" class="space-y-4"></div>
+            <div id="empty-donaciones" class="hidden text-center py-10 text-gray-400"><span class="material-symbols-outlined text-4xl mb-2">volunteer_activism</span><p>No has realizado donaciones aún.</p></div>
+        </div>
+
+        <div id="view-solicitudes" class="view-section hidden">
+            <div id="grid-mis-solicitudes" class="space-y-4"></div>
+            <div id="empty-solicitudes" class="hidden text-center py-10 text-gray-400"><span class="material-symbols-outlined text-4xl mb-2">diversity_1</span><p>No has solicitado ayuda aún.</p></div>
+        </div>
+
+    </main>
+
+    <script src="js/layout.js"></script>
+    <script>
+        // --- LÓGICA PRINCIPAL ---
+        function switchTab(tabName) {
+            document.querySelectorAll('.view-section').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('border-primary', 'text-primary');
+                btn.classList.add('border-transparent', 'text-slate-500');
+            });
+            document.getElementById(`view-${tabName}`).classList.remove('hidden');
+            document.getElementById(`tab-btn-${tabName}`).classList.remove('border-transparent', 'text-slate-500');
+            document.getElementById(`tab-btn-${tabName}`).classList.add('border-primary', 'text-primary');
+            
+            // Ya NO cargamos datos aquí para evitar el "efecto cero", se cargan al inicio.
+        }
+
+        async function loadProfile() {
+            const token = localStorage.getItem('token');
+            if(!token) { window.location.href='login.html'; return; }
+
+            try {
+                const res = await fetch('backend/api/usuarios.php?action=perfil', {
+                    headers: {'Authorization': 'Bearer ' + token}
+                });
+                const json = await res.json();
+
+                if(json.ok) {
+                    const u = json.data;
+                    document.getElementById('profile-name').innerText = u.nombre;
+                    document.getElementById('profile-role').innerText = u.rol || 'Ciudadano';
+                    document.getElementById('profile-location').innerText = u.comunidad || 'Maracaibo';
+                    document.getElementById('profile-pic').src = u.foto_perfil || 'assets/avatars/avatar1.png';
+                    document.getElementById('stat-id').innerText = '#' + u.id_usuario;
+
+                    document.getElementById('info-email').innerText = u.email;
+                    document.getElementById('info-phone').innerText = u.telefono || 'No registrado';
+                    document.getElementById('info-bio').innerText = u.bio || 'Sin biografía disponible.';
+
+                    if(u.metodo_contacto === 'whatsapp') document.getElementById('badge-whatsapp').classList.remove('hidden');
+                    if(u.metodo_contacto === 'telegram') document.getElementById('badge-telegram').classList.remove('hidden');
+                }
+            } catch(e) { console.error("Error perfil:", e); }
+        }
+
+        // Carga proyectos y actualiza el contador global
+        async function loadMyProjects() {
+            const u = JSON.parse(localStorage.getItem('usuario'));
+            const id = u.id || u.id_usuario;
+            try {
+                const res = await fetch(`backend/api/proyectos.php?action=listar_usuario&id=${id}`);
+                const json = await res.json();
+                const container = document.getElementById('grid-mis-proyectos');
+                container.innerHTML = '';
+
+                if(json.ok && json.data.length > 0) {
+                    document.getElementById('stat-proyectos').innerText = json.data.length; // Actualiza Stat
+                    json.data.forEach(p => {
+                        container.innerHTML += `
+                        <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden hover:shadow-md transition">
+                            <div class="h-32 bg-slate-200 relative">
+                                <img src="${p.imagen || 'assets/noimage.jpg'}" class="w-full h-full object-cover">
+                                <span class="absolute top-2 right-2 px-2 py-1 text-[10px] font-bold uppercase rounded-lg bg-blue-100 text-blue-700">Activo</span>
+                            </div>
+                            <div class="p-4">
+                                <h4 class="font-bold text-slate-900 truncate">${p.titulo}</h4>
+                                <p class="text-xs text-slate-500 mb-4">${new Date(p.fecha_creacion).toLocaleDateString()}</p>
+                                <a href="proyecto.html?id=${p.id_proyecto}" class="block text-center w-full py-2 bg-slate-50 hover:bg-slate-100 text-primary font-bold text-xs rounded-lg border border-slate-200 transition">Gestionar</a>
+                            </div>
+                        </div>`;
+                    });
+                } else {
+                    document.getElementById('empty-proyectos').classList.remove('hidden');
+                }
+            } catch(e) { console.error(e); }
+        }
+
+        // Carga donaciones y actualiza los contadores de donaciones/solicitudes
+        async function loadMyDonations() {
+            const token = localStorage.getItem('token');
+            try {
+                const res = await fetch('backend/api/donaciones.php?action=listar_propias', {
+                    headers: {'Authorization': 'Bearer ' + token}
+                }); 
+                const json = await res.json();
+                const containerDon = document.getElementById('grid-mis-donaciones');
+                const containerSol = document.getElementById('grid-mis-solicitudes');
+                containerDon.innerHTML = ''; containerSol.innerHTML = '';
+
+                let countDon = 0;
+                let countSol = 0;
+
+                if(json.ok && json.data.length > 0) {
+                    json.data.forEach(d => {
+                        const destino = d.nombre_proyecto ? `Para: ${d.nombre_proyecto}` : 'Donación General';
+                        const html = `
+                        <div class="flex items-center gap-4 p-4 bg-white border border-slate-200 rounded-xl hover:bg-slate-50 transition">
+                            <div class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-500">
+                                <span class="material-symbols-outlined">${d.modo === 'oferta' ? 'volunteer_activism' : 'back_hand'}</span>
+                            </div>
+                            <div class="flex-1">
+                                <h4 class="font-bold text-slate-800 text-sm">${d.titulo}</h4>
+                                <p class="text-xs text-primary font-bold">${destino}</p>
+                                <p class="text-xs text-slate-500 mt-1 truncate">${d.descripcion}</p>
+                            </div>
+                            <span class="text-xs font-bold text-slate-400">${new Date(d.fecha_oferta).toLocaleDateString()}</span>
+                        </div>`;
+
+                        if (d.modo === 'oferta') {
+                            containerDon.innerHTML += html;
+                            countDon++;
+                        } else {
+                            containerSol.innerHTML += html;
+                            countSol++;
+                        }
+                    });
+
+                    // Actualizar Stats
+                    document.getElementById('stat-donaciones').innerText = countDon;
+                    document.getElementById('stat-solicitudes').innerText = countSol;
+                }
+                
+                if(countDon === 0) document.getElementById('empty-donaciones').classList.remove('hidden');
+                if(countSol === 0) document.getElementById('empty-solicitudes').classList.remove('hidden');
+
+            } catch(e) { console.error(e); }
+        }
+
+        // --- INICIO ---
+        document.addEventListener('DOMContentLoaded', async () => {
+            // 1. Cargar Perfil
+            await loadProfile();
+            
+            // 2. CARGAR CONTADORES INMEDIATAMENTE (Aquí estaba el fallo antes)
+            loadMyProjects();
+            loadMyDonations();
+
+            // 3. Configurar Pestaña
+            const params = new URLSearchParams(window.location.search);
+            const tab = params.get('tab') || 'perfil';
+            switchTab(tab);
+        });
+    </script>
+</body>
+</html>

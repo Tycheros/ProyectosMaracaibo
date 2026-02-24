@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html class="light" lang="es">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Proyectos - Conecta Maracaibo</title>
+    <link href="https://fonts.googleapis.com" rel="preconnect"/>
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700;900&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#2c5aa0",
+                        "secondary-text": "#607D8B",
+                        "background-light": "#F5F7FA",
+                        "background-dark": "#13181f",
+                    },
+                    fontFamily: { "display": ["Public Sans", "sans-serif"] },
+                },
+            },
+        }
+    </script>
+    <style> body { font-family: "Public Sans", sans-serif; } </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark min-h-screen flex flex-col">
+
+    <div id="layout-header"></div>
+
+    <main class="w-full max-w-[1440px] mx-auto px-6 md:px-12 lg:px-20 py-8 flex-1 mt-20">
+        
+        <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10">
+            <div class="max-w-2xl">
+                <div class="flex items-center gap-2 mb-2">
+                    <span class="bg-primary/10 text-primary text-xs font-bold px-2.5 py-0.5 rounded-full uppercase tracking-wide">Panel Ciudadano</span>
+                </div>
+                <h2 class="text-[#121417] dark:text-white text-3xl md:text-4xl font-black leading-tight tracking-tight mb-3">
+                    Proyectos Pendientes de Validación
+                </h2>
+                <p class="text-secondary-text dark:text-gray-400 text-lg leading-relaxed">
+                    Revisa las propuestas vecinales, analiza su impacto y valida aquellas que beneficien a tu comunidad.
+                </p>
+            </div>
+            
+            <div class="flex flex-col sm:flex-row gap-3">
+                <a href="crear-proyecto.html" class="bg-primary hover:bg-[#1e4580] text-white px-6 py-3 rounded-xl text-sm font-bold shadow-lg shadow-primary/20 transition-all flex items-center justify-center gap-2 transform active:scale-95">
+                    <span class="material-symbols-outlined text-[22px]">add_circle</span>
+                    Proponer Proyecto
+                </a>
+            </div>
+        </div>
+
+        <div class="bg-white dark:bg-[#1e2329] p-4 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800 mb-8">
+            <div class="flex flex-col xl:flex-row items-center justify-between gap-4">
+                
+                <div class="relative w-full xl:max-w-md">
+                    <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-secondary-text">search</span>
+                    <input id="input-busqueda" class="block w-full pl-10 pr-3 py-2.5 border-none rounded-lg bg-[#F5F7FA] dark:bg-gray-800 text-gray-900 dark:text-white placeholder-secondary-text focus:ring-2 focus:ring-primary sm:text-sm" placeholder="Buscar por título o descripción..." type="text"/>
+                </div>
+
+                <div class="flex flex-col sm:flex-row gap-4 w-full xl:w-auto items-center">
+                    
+                    <div class="flex bg-[#F5F7FA] dark:bg-gray-800 p-1 rounded-lg w-full sm:w-auto">
+                        <button onclick="ProyectosPage.ordenar('recientes')" id="btn-recientes" class="flex-1 sm:flex-none px-4 py-2 bg-white dark:bg-gray-700 shadow-sm text-primary font-bold rounded-md text-xs transition-all">
+                            Recientes
+                        </button>
+                        <button onclick="ProyectosPage.ordenar('populares')" id="btn-populares" class="flex-1 sm:flex-none px-4 py-2 text-gray-500 hover:text-gray-700 font-medium rounded-md text-xs transition-all">
+                            Más Votados
+                        </button>
+                    </div>
+
+                    <div class="relative w-full sm:w-64">
+                        <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none text-[20px]">filter_list</span>
+                        <select onchange="ProyectosPage.filterByCategory(this.value)" class="w-full pl-10 pr-4 py-2.5 bg-[#F5F7FA] dark:bg-gray-800 border-none rounded-lg text-sm font-medium text-gray-700 dark:text-gray-200 focus:ring-2 focus:ring-primary cursor-pointer appearance-none">
+                            <option value="all">Todas las Categorías</option>
+                            <option value="infraestructura">Infraestructura</option>
+                            <option value="salud">Salud</option>
+                            <option value="educacion">Educación</option>
+                            <option value="medio_ambiente">Medio Ambiente</option>
+                            <option value="cultura">Cultura</option>
+                            <option value="seguridad">Seguridad</option>
+                            <option value="deporte">Deporte</option>
+                            <option value="tecnologia">Tecnología</option>
+                        </select>
+                        <span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none text-[20px]">expand_more</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="lista-proyectos" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+            <div class="col-span-full py-20 text-center text-gray-400">
+                <span class="material-symbols-outlined text-4xl animate-spin mb-2 text-primary">refresh</span>
+                <p>Cargando propuestas...</p>
+            </div>
+        </div>
+
+    </main>
+
+    <script src="js/layout.js"></script>
+    <script src="js/proyectos.js"></script>
+    <script>document.addEventListener('DOMContentLoaded', () => { ProyectosPage.init(); });</script>
+</body>
+</html>

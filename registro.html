@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Registro - Conecta Maracaibo</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;700;900&family=Noto+Sans:wght@400;500;700;900&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+        darkMode: "class",
+        theme: {
+            extend: {
+                colors: {
+                    "primary": "#2C5AA0",
+                    "app-bg": "#F5F7FA",
+                    "secondary-text": "#607D8B",
+                },
+                fontFamily: {
+                    "display": ["Public Sans", "sans-serif"],
+                },
+            },
+        },
+    }
+</script>
+<style>
+    body {
+        background-image: url('https://cdn1.matadornetwork.com/blogs/2/2016/05/Maracaibo-Venezuela-bridge-sunset-with-traffic-1200x850.jpeg');
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+    }
+    .card-scale { transform: scale(0.95); transform-origin: center; }
+    .skill-checkbox:checked + label {
+        background-color: #2C5AA0; color: white; border-color: #2C5AA0;
+    }
+</style>
+</head>
+<body class="font-display antialiased">
+<div class="flex min-h-screen items-center justify-center p-4 backdrop-blur-sm bg-black/40">
+    <div class="w-full max-w-2xl bg-white/95 backdrop-blur-md rounded-2xl shadow-2xl border border-white/20 p-8 sm:p-10 card-scale relative">
+        <div class="flex flex-col items-center mb-6 text-center">
+            <div class="size-12 bg-primary rounded-xl flex items-center justify-center text-white mb-3 shadow-lg shadow-primary/30"><span class="material-symbols-outlined text-3xl">handshake</span></div>
+            <h1 class="text-2xl font-bold tracking-tight text-gray-900">Registro Ciudadano</h1>
+            <p class="text-secondary-text mt-1 text-sm">Únete a la red colaborativa de Maracaibo</p>
+        </div>
+        
+        <form id="formRegistro" class="space-y-5">
+            <div class="relative flex flex-col items-center justify-center p-4 bg-gray-50 rounded-xl border border-gray-100">
+                <p class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3">Elige tu Avatar</p>
+                <div class="relative group cursor-pointer" id="avatar-toggle">
+                    <div class="w-20 h-20 rounded-full border-4 border-white shadow-md overflow-hidden bg-white">
+                        <img id="avatar-preview-img" src="assets/avatars/avatar1.png" class="w-full h-full object-cover" />
+                    </div>
+                    <div class="absolute bottom-0 right-0 bg-primary text-white rounded-full p-1 shadow-sm border-2 border-white"><span class="material-symbols-outlined text-sm">edit</span></div>
+                </div>
+                <input type="hidden" name="avatar_selected" id="avatar-selected" value="assets/avatars/avatar1.png" />
+                
+                <div id="avatar-dropdown" class="hidden absolute top-full left-1/2 -translate-x-1/2 mt-2 w-96 bg-white rounded-xl shadow-2xl border border-gray-100 z-50 p-4 animate-[fadeIn_0.2s_ease-out]">
+                    <div class="grid grid-cols-5 gap-4">
+                        <button type="button" class="avatar-option group" data-src="assets/avatars/avatar1.png"><img src="assets/avatars/avatar1.png" class="w-14 h-14 rounded-full hover:scale-110 transition-transform border-2 border-transparent hover:border-primary" /></button> 
+                        <button type="button" class="avatar-option group" data-src="assets/avatars/avatar2.png"><img src="assets/avatars/avatar2.png" class="w-14 h-14 rounded-full hover:scale-110 transition-transform border-2 border-transparent hover:border-primary" /></button> 
+                        <button type="button" class="avatar-option group" data-src="assets/avatars/avatar3.png"><img src="assets/avatars/avatar3.png" class="w-14 h-14 rounded-full hover:scale-110 transition-transform border-2 border-transparent hover:border-primary" /></button> 
+                        <button type="button" class="avatar-option group" data-src="assets/avatars/avatar4.png"><img src="assets/avatars/avatar4.png" class="w-14 h-14 rounded-full hover:scale-110 transition-transform border-2 border-transparent hover:border-primary" /></button> 
+                        <button type="button" class="avatar-option group" data-src="assets/avatars/avatar5.png"><img src="assets/avatars/avatar5.png" class="w-14 h-14 rounded-full hover:scale-110 transition-transform border-2 border-transparent hover:border-primary" /></button> 
+                        <button type="button" class="avatar-option group" data-src="assets/avatars/avatar6.png"><img src="assets/avatars/avatar6.png" class="w-14 h-14 rounded-full hover:scale-110 transition-transform border-2 border-transparent hover:border-primary" /></button> 
+                        <button type="button" class="avatar-option group" data-src="assets/avatars/avatar7.png"><img src="assets/avatars/avatar7.png" class="w-14 h-14 rounded-full hover:scale-110 transition-transform border-2 border-transparent hover:border-primary" /></button> 
+                        <button type="button" class="avatar-option group" data-src="assets/avatars/avatar8.png"><img src="assets/avatars/avatar8.png" class="w-14 h-14 rounded-full hover:scale-110 transition-transform border-2 border-transparent hover:border-primary" /></button> 
+                        <button type="button" class="avatar-option group" data-src="assets/avatars/avatar9.png"><img src="assets/avatars/avatar9.png" class="w-14 h-14 rounded-full hover:scale-110 transition-transform border-2 border-transparent hover:border-primary" /></button> 
+                        <button type="button" class="avatar-option group" data-src="assets/avatars/avatar10.png"><img src="assets/avatars/avatar10.png" class="w-14 h-14 rounded-full hover:scale-110 transition-transform border-2 border-transparent hover:border-primary" /></button>
+                    </div>
+                    <div class="absolute -top-2 left-1/2 -translate-x-1/2 w-4 h-4 bg-white transform rotate-45 border-t border-l border-gray-100"></div>
+                </div>
+            </div>
+
+            <div class="space-y-1.5">
+                <label class="text-sm font-bold text-gray-700">Nombre Completo</label>
+                <div class="relative">
+                    <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 material-symbols-outlined text-[20px]">person</span>
+                    <input name="nombre" class="w-full rounded-lg border-gray-300 pl-11 py-2.5 focus:border-primary focus:ring-1 focus:ring-primary placeholder-gray-400" placeholder="Ej. Juan Pérez" required="" type="text" />
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div class="space-y-1.5">
+                    <label class="text-sm font-bold text-gray-700">Cédula</label>
+                    <div class="relative">
+                        <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 material-symbols-outlined text-[20px]">badge</span>
+                        <input name="cedula" class="w-full rounded-lg border-gray-300 pl-11 py-2.5 focus:border-primary focus:ring-1 focus:ring-primary placeholder-gray-400" placeholder="V-12345678" required="" type="text" />
+                    </div>
+                </div>
+                <div class="space-y-1.5">
+                    <label class="text-sm font-bold text-gray-700">Teléfono</label>
+                    <div class="relative">
+                        <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 material-symbols-outlined text-[20px]">phone</span>
+                        <input name="telefono" class="w-full rounded-lg border-gray-300 pl-11 py-2.5 focus:border-primary focus:ring-1 focus:ring-primary placeholder-gray-400" placeholder="0414-1234567" required="" type="tel" />
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div class="space-y-1.5">
+                    <label class="text-sm font-bold text-gray-700">Dirección</label>
+                    <div class="relative">
+                        <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 material-symbols-outlined text-[20px]">home_pin</span>
+                        <input name="direccion" class="w-full rounded-lg border-gray-300 pl-11 py-2.5 focus:border-primary focus:ring-1 focus:ring-primary placeholder-gray-400" placeholder="Ej. Sector Belloso, Calle 85" required="" type="text" />
+                    </div>
+                </div>
+                <div class="space-y-1.5">
+                    <label class="text-sm font-bold text-gray-700">Parroquia</label>
+                    <div class="relative">
+                        <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 material-symbols-outlined text-[20px]">map</span>
+                        <select name="parroquia" class="w-full rounded-lg border-gray-300 pl-11 py-2.5 focus:border-primary focus:ring-1 focus:ring-primary text-gray-600 bg-white cursor-pointer appearance-none" required>
+                            <option value="" disabled selected>Seleccione...</option>
+                            <option value="Antonio Borjas Romero">Antonio Borjas Romero</option>
+                            <option value="Bolívar">Bolívar</option>
+                            <option value="Cacique Mara">Cacique Mara</option>
+                            <option value="Caracciolo Parra Pérez">Caracciolo Parra Pérez</option>
+                            <option value="Cecilio Acosta">Cecilio Acosta</option>
+                            <option value="Chiquinquirá">Chiquinquirá</option>
+                            <option value="Coquivacoa">Coquivacoa</option>
+                            <option value="Cristo de Aranza">Cristo de Aranza</option>
+                            <option value="Francisco Eugenio Bustamante">Fco. Eugenio Bustamante</option>
+                            <option value="Idelfonso Vásquez">Idelfonso Vásquez</option>
+                            <option value="Juana de Ávila">Juana de Ávila</option>
+                            <option value="Luis Hurtado Higuera">Luis Hurtado Higuera</option>
+                            <option value="Manuel Dagnino">Manuel Dagnino</option>
+                            <option value="Olegario Villalobos">Olegario Villalobos</option>
+                            <option value="Raúl Leoni">Raúl Leoni</option>
+                            <option value="San Isidro">San Isidro</option>
+                            <option value="Santa Lucía">Santa Lucía</option>
+                            <option value="Venancio Pulgar">Venancio Pulgar</option>
+                        </select>
+                        <span class="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400 material-symbols-outlined">expand_more</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="space-y-1.5">
+                <label class="text-sm font-bold text-gray-700">Correo Electrónico</label>
+                <div class="relative">
+                    <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 material-symbols-outlined text-[20px]">mail</span>
+                    <input name="email" class="w-full rounded-lg border-gray-300 pl-11 py-2.5 focus:border-primary focus:ring-1 focus:ring-primary placeholder-gray-400" placeholder="correo@ejemplo.com" required="" type="email" />
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div class="space-y-1.5">
+                    <label class="text-sm font-bold text-gray-700">Contraseña</label>
+                    <div class="relative">
+                        <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 material-symbols-outlined text-[20px]">lock</span>
+                        <input name="password" class="w-full rounded-lg border-gray-300 pl-11 py-2.5 focus:border-primary focus:ring-1 focus:ring-primary placeholder-gray-400" placeholder="••••••••" required="" type="password" />
+                    </div>
+                </div>
+                <div class="space-y-1.5">
+                    <label class="text-sm font-bold text-gray-700">Confirmar</label>
+                    <div class="relative">
+                        <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 material-symbols-outlined text-[20px]">lock_reset</span>
+                        <input name="password_confirm" class="w-full rounded-lg border-gray-300 pl-11 py-2.5 focus:border-primary focus:ring-1 focus:ring-primary placeholder-gray-400" placeholder="••••••••" required="" type="password" />
+                    </div>
+                </div>
+            </div>
+
+            <div class="space-y-2 pt-2">
+                <div class="flex items-center justify-between border-b border-gray-100 pb-2">
+                    <label class="text-sm font-bold text-gray-700">Habilidades (Voluntariado)</label>
+                    <span class="text-[10px] uppercase tracking-wider text-secondary-text font-bold">Selección múltiple</span>
+                </div>
+                <div class="flex flex-wrap gap-2">
+                    <div class="relative"><input class="hidden skill-checkbox" id="sk1" name="skills" type="checkbox" value="Primeros Auxilios" /><label class="cursor-pointer inline-flex items-center px-3 py-1.5 rounded-lg border border-gray-300 bg-white text-xs font-bold text-gray-600 transition-all hover:border-primary" for="sk1">Primeros Auxilios</label></div>
+                    <div class="relative"><input class="hidden skill-checkbox" id="sk2" name="skills" type="checkbox" value="Docencia" /><label class="cursor-pointer inline-flex items-center px-3 py-1.5 rounded-lg border border-gray-300 bg-white text-xs font-bold text-gray-600 transition-all hover:border-primary" for="sk2">Docencia</label></div>
+                    <div class="relative"><input class="hidden skill-checkbox" id="sk3" name="skills" type="checkbox" value="Cocina" /><label class="cursor-pointer inline-flex items-center px-3 py-1.5 rounded-lg border border-gray-300 bg-white text-xs font-bold text-gray-600 transition-all hover:border-primary" for="sk3">Cocina</label></div>
+                    <div class="relative"><input class="hidden skill-checkbox" id="sk4" name="skills" type="checkbox" value="Logística" /><label class="cursor-pointer inline-flex items-center px-3 py-1.5 rounded-lg border border-gray-300 bg-white text-xs font-bold text-gray-600 transition-all hover:border-primary" for="sk4">Logística</label></div>
+                    <div class="relative"><input class="hidden skill-checkbox" id="sk5" name="skills" type="checkbox" value="Construcción" /><label class="cursor-pointer inline-flex items-center px-3 py-1.5 rounded-lg border border-gray-300 bg-white text-xs font-bold text-gray-600 transition-all hover:border-primary" for="sk5">Construcción</label></div>
+                    <div class="relative"><input class="hidden skill-checkbox" id="sk6" name="skills" type="checkbox" value="Arte" /><label class="cursor-pointer inline-flex items-center px-3 py-1.5 rounded-lg border border-gray-300 bg-white text-xs font-bold text-gray-600 transition-all hover:border-primary" for="sk6">Arte</label></div>
+                    <div class="relative"><input class="hidden skill-checkbox" id="sk7" name="skills" type="checkbox" value="Música" /><label class="cursor-pointer inline-flex items-center px-3 py-1.5 rounded-lg border border-gray-300 bg-white text-xs font-bold text-gray-600 transition-all hover:border-primary" for="sk7">Música</label></div>
+                    <div class="relative"><input class="hidden skill-checkbox" id="sk8" name="skills" type="checkbox" value="Deportes" /><label class="cursor-pointer inline-flex items-center px-3 py-1.5 rounded-lg border border-gray-300 bg-white text-xs font-bold text-gray-600 transition-all hover:border-primary" for="sk8">Deportes</label></div>
+                </div>
+            </div>
+            <button class="w-full bg-primary hover:bg-[#1e4580] text-white font-bold py-3.5 rounded-xl shadow-lg transition-all mt-4 hover:-translate-y-0.5" type="submit"> Registrarme </button>
+        </form>
+
+        <div class="mt-6 text-center">
+            <p class="text-gray-600 text-sm">¿Ya tienes una cuenta? <a class="font-bold text-primary hover:underline ml-1" href="login.html">Inicia Sesión</a></p>
+        </div>
+    </div>
+</div>
+
+<script>
+    const API_URL = 'backend/api/registro.php';
+
+    // 1. Lógica del Dropdown de Avatar
+    const toggleBtn = document.getElementById('avatar-toggle');
+    const dropdown = document.getElementById('avatar-dropdown');
+    const previewImg = document.getElementById('avatar-preview-img');
+    const hiddenInput = document.getElementById('avatar-selected');
+    const options = document.querySelectorAll('.avatar-option');
+
+    toggleBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        dropdown.classList.toggle('hidden');
+    });
+
+    options.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            const src = btn.getAttribute('data-src');
+            previewImg.src = src;
+            hiddenInput.value = src;
+            dropdown.classList.add('hidden');
+        });
+    });
+
+    document.addEventListener('click', (e) => {
+        if (!toggleBtn.contains(e.target) && !dropdown.contains(e.target)) {
+            dropdown.classList.add('hidden');
+        }
+    });
+
+    // 2. Lógica de Envío del Formulario
+    document.getElementById('formRegistro').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const btnSubmit = this.querySelector('button[type="submit"]');
+        const originalText = btnSubmit.innerText;
+        btnSubmit.innerText = "Registrando...";
+        btnSubmit.disabled = true;
+
+        const pass = this.password.value;
+        const confirm = this.password_confirm.value;
+
+        if(pass !== confirm) {
+            alert("Las contraseñas no coinciden");
+            btnSubmit.innerText = originalText;
+            btnSubmit.disabled = false;
+            return;
+        }
+
+        const skills = [];
+        this.querySelectorAll('input[name="skills"]:checked').forEach(cb => {
+            skills.push(cb.value);
+        });
+
+        const datos = {
+            nombre: this.nombre.value,
+            cedula: this.cedula.value,
+            telefono: this.telefono.value,
+            direccion: this.direccion.value,
+            parroquia: this.parroquia.value,
+            email: this.email.value,
+            password: pass,
+            avatar: this.avatar_selected.value,
+            skills: skills
+        };
+
+        try {
+            const response = await fetch(API_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(datos)
+            });
+
+            const text = await response.text();
+            let json;
+            try {
+                json = JSON.parse(text);
+            } catch(err) {
+                console.error("Error al parsear JSON:", text);
+                throw new Error("Respuesta inválida del servidor");
+            }
+
+            if (json.ok) {
+                alert("¡Registro Exitoso!");
+                window.location.href = 'login.html';
+            } else {
+                alert("Error: " + json.msg);
+            }
+
+        } catch (error) {
+            console.error(error);
+            alert("Ocurrió un error: " + error.message);
+        } finally {
+            btnSubmit.innerText = originalText;
+            btnSubmit.disabled = false;
+        }
+    });
+</script>
+</body>
+</html>

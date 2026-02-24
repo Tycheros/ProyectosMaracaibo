@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html class="light" lang="es">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Detalle de Oferta - Conecta Maracaibo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;600;700&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+    <script>tailwind.config = { theme: { extend: { colors: { "primary": "#2c5aa0" }, fontFamily: { "display": ["Public Sans", "sans-serif"] } } } }</script>
+    <style>body { font-family: 'Public Sans', sans-serif; }</style>
+</head>
+<body class="bg-[#F5F7FA] text-[#121417]">
+
+    <div id="layout-header"></div>
+
+    <main class="max-w-3xl mx-auto px-4 mt-28 mb-20">
+        
+        <a href="perfil.html?tab=proyectos" class="inline-flex items-center gap-2 text-gray-500 hover:text-primary mb-6 transition font-bold text-sm">
+            <span class="material-symbols-outlined text-lg">arrow_back</span> Volver a mis proyectos
+        </a>
+
+        <div id="loading" class="text-center py-20">
+            <span class="material-symbols-outlined text-4xl text-gray-300 animate-spin">progress_activity</span>
+            <p class="text-gray-400 mt-2">Cargando información...</p>
+        </div>
+
+        <div id="contenido" class="hidden bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden">
+            
+            <div class="bg-blue-50/50 p-8 border-b border-gray-100 flex flex-col md:flex-row items-center justify-between gap-4">
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 bg-orange-100 text-orange-600 rounded-full flex items-center justify-center shrink-0">
+                        <span class="material-symbols-outlined text-2xl">inventory_2</span>
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-bold text-gray-900">Ayuda Recibida</h1>
+                        <p class="text-sm text-gray-500">Para el proyecto: <strong id="nombre-proyecto" class="text-primary">Cargando...</strong></p>
+                    </div>
+                </div>
+                <span class="text-xs font-bold text-gray-400 bg-white px-3 py-1 rounded-full border border-gray-200" id="fecha-mensaje">--/--/----</span>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2">
+                
+                <div class="p-8 border-b md:border-b-0 md:border-r border-gray-100 flex flex-col items-center text-center bg-white relative z-10">
+                    <img id="foto-donante" src="assets/avatars/avatar1.png" class="w-24 h-24 rounded-full border-4 border-white shadow-lg object-cover mb-4 bg-gray-200">
+                    <h2 class="text-lg font-bold text-gray-800" id="nombre-donante">Usuario Desconocido</h2>
+                    <p class="text-xs text-gray-400 mb-6 uppercase tracking-widest">Colaborador</p>
+                    
+                    <div class="w-full space-y-3">
+                        <a id="btn-whatsapp" href="#" target="_blank" class="flex items-center justify-center gap-2 w-full bg-green-500 hover:bg-green-600 text-white py-3 rounded-xl font-bold transition shadow-md shadow-green-200 hidden">
+                            <span class="material-symbols-outlined">chat</span> Contactar WhatsApp
+                        </a>
+                        <a id="btn-email" href="#" class="flex items-center justify-center gap-2 w-full bg-gray-50 hover:bg-gray-100 text-gray-700 py-3 rounded-xl font-bold transition border border-gray-200 hidden">
+                            <span class="material-symbols-outlined">mail</span> Enviar Correo
+                        </a>
+                        <p id="no-contact" class="text-xs text-red-400 hidden bg-red-50 p-2 rounded-lg">Este usuario no compartió datos de contacto.</p>
+                    </div>
+                </div>
+
+                <div class="p-8 bg-gray-50/30">
+                    <h3 class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4">Detalles de la entrega</h3>
+                    
+                    <div class="bg-white p-5 rounded-2xl border border-gray-200 shadow-sm mb-6">
+                        <p id="texto-oferta" class="text-sm text-gray-700 whitespace-pre-line leading-relaxed">...</p>
+                    </div>
+
+                    <div class="flex gap-3 text-xs text-blue-800 bg-blue-50 p-3 rounded-xl border border-blue-100">
+                        <span class="material-symbols-outlined text-lg">info</span>
+                        <p>Coordina la entrega con el usuario. Cuando tengas los materiales, ve a tu proyecto y usa el botón <strong>"Registrar Recibido"</strong>.</p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <script src="js/layout.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const params = new URLSearchParams(window.location.search);
+            const id = params.get('id'); 
+            const token = localStorage.getItem('token');
+            const statusDiv = document.getElementById('loading');
+
+            // 1. Validaciones iniciales
+            if(!token) {
+                alert("Debes iniciar sesión para ver los detalles.");
+                window.location.href = 'login.html';
+                return;
+            }
+            if(!id) {
+                statusDiv.innerHTML = '<p class="text-red-500 font-bold">Error: Enlace incorrecto (Falta ID).</p>';
+                return;
+            }
+
+            try {
+                // 2. Petición al Backend
+                const res = await fetch(`backend/api/donaciones.php?action=ver&id=${id}`, {
+                    headers: { 'Authorization': 'Bearer ' + token }
+                });
+                
+                const json = await res.json();
+
+                if(json.ok) {
+                    const d = json.data;
+                    const me = JSON.parse(localStorage.getItem('usuario'));
+                    
+                    // --- SEGURIDAD ROBUSTA (Corrección del error) ---
+                    // Intentamos obtener el ID de cualquier propiedad posible
+                    const myId = me.id || me.id_usuario || me.idUser;
+                    const ownerId = d.id_dueno_proyecto;
+
+                    console.log("🔍 DEBUG DE PERMISOS:", { "Mi ID": myId, "Dueño ID": ownerId });
+
+                    // Comparamos como texto para evitar errores de tipo
+                    if(String(ownerId) !== String(myId)) {
+                        statusDiv.innerHTML = `
+                            <div class="bg-white p-8 rounded-3xl shadow-xl border border-red-100 max-w-md mx-auto">
+                                <div class="text-red-500 mb-4 flex justify-center"><span class="material-symbols-outlined text-5xl">gpp_bad</span></div>
+                                <h3 class="text-xl font-bold text-gray-900 mb-2">Acceso Denegado</h3>
+                                <p class="text-gray-500 text-sm mb-6">Esta oferta pertenece a un proyecto que no es tuyo.</p>
+                                <div class="bg-gray-100 p-3 rounded-lg text-xs font-mono text-gray-500 text-left">
+                                    <p>Tu ID actual: ${myId}</p>
+                                    <p>ID del Dueño: ${ownerId}</p>
+                                </div>
+                                <button onclick="window.location.href='perfil.html'" class="mt-6 w-full bg-gray-900 text-white py-3 rounded-xl font-bold text-sm">Ir a mi Perfil</button>
+                            </div>`;
+                        return;
+                    }
+                    // ---------------------------------------
+
+                    // 4. Llenar Datos
+                    document.getElementById('nombre-proyecto').innerText = d.nombre_proyecto || 'Proyecto';
+                    
+                    // Fecha amigable
+                    const fecha = d.fecha_oferta ? new Date(d.fecha_oferta) : new Date();
+                    document.getElementById('fecha-mensaje').innerText = fecha.toLocaleDateString('es-ES', { 
+                        year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute:'2-digit'
+                    });
+                    
+                    document.getElementById('nombre-donante').innerText = d.nombre_donante || 'Usuario Anónimo';
+                    if(d.foto_donante) document.getElementById('foto-donante').src = d.foto_donante;
+
+                    document.getElementById('texto-oferta').innerText = d.descripcion || 'Sin detalles.';
+
+                    // 5. Botones de Contacto
+                    let hayContacto = false;
+                    
+                    if(d.tlf_donante) {
+                        const tlf = d.tlf_donante.replace(/\D/g,''); // Solo números
+                        const txt = `Hola ${d.nombre_donante}, recibí tu oferta de materiales para mi proyecto "${d.nombre_proyecto}". ¡Muchas gracias! ¿Cuándo podrías hacer la entrega?`;
+                        const btnWs = document.getElementById('btn-whatsapp');
+                        btnWs.href = `https://wa.me/${tlf}?text=${encodeURIComponent(txt)}`;
+                        btnWs.classList.remove('hidden');
+                        hayContacto = true;
+                    }
+
+                    if(d.email_donante) {
+                        const btnMail = document.getElementById('btn-email');
+                        btnMail.href = `mailto:${d.email_donante}?subject=Coordinación donación: ${d.nombre_proyecto}`;
+                        btnMail.classList.remove('hidden');
+                        hayContacto = true;
+                    }
+
+                    if(!hayContacto) {
+                        document.getElementById('no-contact').classList.remove('hidden');
+                    }
+
+                    // 6. Mostrar Interfaz
+                    statusDiv.classList.add('hidden');
+                    document.getElementById('contenido').classList.remove('hidden');
+
+                } else {
+                    statusDiv.innerHTML = `<p class="text-red-500 font-bold">${json.msg || 'Datos no encontrados.'}</p>`;
+                }
+            } catch(e) { 
+                console.error(e); 
+                statusDiv.innerHTML = '<p class="text-red-500 font-bold">Error de conexión con el servidor.</p>';
+            }
+        });
+    </script>
+</body>
+</html>

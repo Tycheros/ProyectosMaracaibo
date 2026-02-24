@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html class="light" lang="es">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Ajustes - Conecta Maracaibo</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700;900&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: { "primary": "#2c5aa0", "secondary": "#607D8B", "success": "#4CAF50", "background-light": "#f8fafc" },
+                    fontFamily: { "display": ["Public Sans", "sans-serif"] },
+                },
+            },
+        }
+    </script>
+    <style> body { font-family: 'Public Sans', sans-serif; } </style>
+</head>
+<body class="bg-background-light text-slate-900">
+
+    <div id="layout-header"></div>
+
+    <main class="max-w-3xl mx-auto px-6 mt-28 mb-20">
+        
+        <div class="mb-10">
+            <h2 class="text-3xl font-black text-slate-900 tracking-tight">Configuración</h2>
+            <p class="text-secondary mt-2">Personaliza tu identidad y privacidad.</p>
+        </div>
+
+        <form id="form-ajustes">
+            
+            <section class="bg-white rounded-2xl shadow-sm border border-slate-200 mb-8 overflow-hidden">
+                <div class="p-6 border-b border-slate-100 bg-slate-50/50">
+                    <h3 class="text-lg font-bold flex items-center gap-2 text-primary">
+                        <span class="material-symbols-outlined">person</span> Información Básica
+                    </h3>
+                </div>
+                
+                <div class="p-8">
+                    <div class="flex flex-col md:flex-row gap-8 items-start">
+                        
+                        <div class="flex-shrink-0 mx-auto md:mx-0 text-center">
+                            <div class="w-32 h-32 rounded-full overflow-hidden ring-4 ring-slate-50 shadow-lg mb-3 mx-auto relative group">
+                                <img id="avatar-preview" src="assets/avatars/avatar1.png" class="w-full h-full object-cover transition duration-300">
+                            </div>
+                            <p class="text-xs text-slate-400 font-bold uppercase tracking-wider">Vista Previa</p>
+                        </div>
+
+                        <div class="flex-1 grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
+                            
+                            <div class="space-y-2 md:col-span-2">
+                                <label class="text-xs font-bold text-slate-500 uppercase tracking-wider">Seleccionar Personaje</label>
+                                <div class="relative">
+                                    <span class="absolute left-4 top-3.5 text-primary font-bold material-symbols-outlined">face</span>
+                                    <select name="avatar_seleccionado" id="select-avatar" class="w-full rounded-xl border-slate-200 bg-slate-50 pl-12 p-3 focus:border-primary focus:ring-primary cursor-pointer font-medium text-slate-700 appearance-none">
+                                        <option value="assets/avatars/avatar1.png">Personaje 1 (Casual)</option>
+                                        <option value="assets/avatars/avatar2.png">Personaje 2 (Formal)</option>
+                                        <option value="assets/avatars/avatar3.png">Personaje 3 (Deportista)</option>
+                                        <option value="assets/avatars/avatar4.png">Personaje 4 (Joven)</option>
+                                        <option value="assets/avatars/avatar5.png">Personaje 5 (Profesional)</option>
+                                        <option value="assets/avatars/avatar6.png">Personaje 6 (Creativo)</option>
+                                        <option value="assets/avatars/avatar7.png">Personaje 7 (Estudiante)</option>
+                                        <option value="assets/avatars/avatar8.png">Personaje 8 (Tecnológico)</option>
+                                    </select>
+                                    <span class="absolute right-4 top-4 text-slate-400 pointer-events-none material-symbols-outlined text-sm">expand_more</span>
+                                </div>
+                            </div>
+
+                            <div class="space-y-2 md:col-span-2">
+                                <label class="text-xs font-bold text-slate-500 uppercase tracking-wider">Nombre Completo</label>
+                                <input type="text" name="nombre" id="input-nombre" class="w-full rounded-xl border-slate-200 bg-slate-50 p-3 focus:border-primary focus:ring-primary font-medium">
+                            </div>
+                            
+                            <div class="space-y-2 md:col-span-2">
+                                <label class="text-xs font-bold text-slate-500 uppercase tracking-wider">Parroquia de Residencia</label>
+                                <div class="relative">
+                                    <span class="absolute left-4 top-3.5 text-slate-400 font-bold material-symbols-outlined">location_city</span>
+                                    <select name="comunidad" id="input-comunidad" class="w-full rounded-xl border-slate-200 bg-slate-50 pl-12 p-3 focus:border-primary focus:ring-primary cursor-pointer appearance-none text-slate-700">
+                                        <option value="" disabled selected>Selecciona tu ubicación</option>
+                                        <option value="Antonio Borjas Romero">Antonio Borjas Romero</option>
+                                        <option value="Bolívar">Bolívar</option>
+                                        <option value="Cacique Mara">Cacique Mara</option>
+                                        <option value="Caracciolo Parra Pérez">Caracciolo Parra Pérez</option>
+                                        <option value="Cecilio Acosta">Cecilio Acosta</option>
+                                        <option value="Chiquinquirá">Chiquinquirá</option>
+                                        <option value="Coquivacoa">Coquivacoa</option>
+                                        <option value="Cristo de Aranza">Cristo de Aranza</option>
+                                        <option value="Francisco Eugenio Bustamante">Francisco Eugenio Bustamante</option>
+                                        <option value="Idelfonso Vásquez">Idelfonso Vásquez</option>
+                                        <option value="Juana de Ávila">Juana de Ávila</option>
+                                        <option value="Luis Hurtado Higuera">Luis Hurtado Higuera</option>
+                                        <option value="Manuel Dagnino">Manuel Dagnino</option>
+                                        <option value="Olegario Villalobos">Olegario Villalobos</option>
+                                        <option value="Raúl Leoni">Raúl Leoni</option>
+                                        <option value="San Isidro">San Isidro</option>
+                                        <option value="Santa Lucía">Santa Lucía</option>
+                                        <option value="Venancio Pulgar">Venancio Pulgar</option>
+                                    </select>
+                                    <span class="absolute right-4 top-4 text-slate-400 pointer-events-none material-symbols-outlined text-sm">expand_more</span>
+                                </div>
+                            </div>
+
+                            <div class="space-y-2 md:col-span-2">
+                                <label class="text-xs font-bold text-slate-500 uppercase tracking-wider">Biografía / Sobre mí</label>
+                                <textarea name="bio" id="input-bio" rows="3" class="w-full rounded-xl border-slate-200 bg-slate-50 p-3 focus:border-primary focus:ring-primary leading-relaxed" placeholder="Escribe una breve descripción para tu perfil público..."></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="bg-white rounded-2xl shadow-sm border border-slate-200 mb-8 overflow-hidden">
+                <div class="p-6 border-b border-slate-100 bg-slate-50/50">
+                    <h3 class="text-lg font-bold flex items-center gap-2 text-primary">
+                        <span class="material-symbols-outlined">chat</span> Métodos de Contacto
+                    </h3>
+                </div>
+
+                <div class="p-8 space-y-8">
+                    <div class="flex items-center justify-between p-4 bg-blue-50/30 border border-blue-100 rounded-xl">
+                        <div>
+                            <p class="font-bold text-slate-800">Compartir al ofrecer ayuda</p>
+                            <p class="text-xs text-secondary mt-1">Permitir que los creadores te contacten directamente.</p>
+                        </div>
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" name="compartir_contacto" id="chk-compartir" class="sr-only peer">
+                            <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-success"></div>
+                        </label>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div class="space-y-4">
+                            <label class="text-xs font-bold text-slate-500 uppercase tracking-wider block mb-2">Canal Preferido</label>
+                            
+                            <label class="relative cursor-pointer block group">
+                                <input type="radio" name="metodo_contacto" value="whatsapp" class="peer sr-only" onchange="toggleTelegramInput()">
+                                <div class="flex items-center gap-4 p-4 rounded-xl border border-slate-200 hover:bg-green-50/50 peer-checked:border-green-500 peer-checked:bg-green-50 transition-all">
+                                    <div class="w-10 h-10 rounded-full bg-green-100 text-green-600 flex items-center justify-center"><span class="material-symbols-outlined">chat</span></div>
+                                    <span class="block font-bold text-slate-700">WhatsApp</span>
+                                    <div class="ml-auto opacity-0 peer-checked:opacity-100 text-green-600"><span class="material-symbols-outlined">check_circle</span></div>
+                                </div>
+                            </label>
+
+                            <label class="relative cursor-pointer block group">
+                                <input type="radio" name="metodo_contacto" value="telegram" class="peer sr-only" onchange="toggleTelegramInput()">
+                                <div class="flex items-center gap-4 p-4 rounded-xl border border-slate-200 hover:bg-blue-50/50 peer-checked:border-blue-500 peer-checked:bg-blue-50 transition-all">
+                                    <div class="w-10 h-10 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center"><span class="material-symbols-outlined">send</span></div>
+                                    <span class="block font-bold text-slate-700">Telegram</span>
+                                    <div class="ml-auto opacity-0 peer-checked:opacity-100 text-blue-600"><span class="material-symbols-outlined">check_circle</span></div>
+                                </div>
+                            </label>
+                        </div>
+
+                        <div class="space-y-6">
+                            <div class="space-y-2">
+                                <label class="text-xs font-bold text-slate-500 uppercase tracking-wider">Número Telefónico</label>
+                                <input type="text" name="telefono" id="input-telefono" placeholder="+58..." class="w-full rounded-xl border-slate-200 bg-slate-50 p-3 focus:border-green-500 focus:ring-green-500">
+                            </div>
+
+                            <div id="div-telegram" class="hidden transition-all duration-300">
+                                <div class="space-y-2">
+                                    <label class="text-xs font-bold text-blue-600 uppercase tracking-wider">Usuario Telegram</label>
+                                    <div class="relative">
+                                        <span class="absolute left-4 top-3.5 text-blue-400 font-bold">@</span>
+                                        <input type="text" name="telegram_user" id="input-telegram" placeholder="usuario" class="w-full rounded-xl border-blue-200 bg-blue-50/30 pl-10 p-3 focus:border-blue-500 focus:ring-blue-500 font-medium text-blue-900">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="bg-white rounded-2xl shadow-sm border border-slate-200 mb-8 overflow-hidden">
+                <div class="p-6 border-b border-slate-100 bg-slate-50/50">
+                    <h3 class="text-lg font-bold flex items-center gap-2 text-primary">
+                        <span class="material-symbols-outlined">visibility</span> Visibilidad Pública
+                    </h3>
+                </div>
+                <div class="p-8 space-y-6">
+                    <p class="text-sm text-slate-500 mb-4">¿Qué datos deseas mostrar a otros usuarios que visiten tu perfil o escaneen tu carnet?</p>
+                    
+                    <div class="flex items-center justify-between p-4 bg-slate-50 border border-slate-200 rounded-xl">
+                        <div>
+                            <p class="font-bold text-slate-800">Mostrar mi Parroquia</p>
+                            <p class="text-xs text-secondary">Ayuda a conectar con proyectos locales.</p>
+                        </div>
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" name="mostrar_comunidad" id="chk-ver-comunidad" class="sr-only peer" checked>
+                            <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:bg-primary peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all"></div>
+                        </label>
+                    </div>
+
+                    <div class="flex items-center justify-between p-4 bg-slate-50 border border-slate-200 rounded-xl">
+                        <div>
+                            <p class="font-bold text-slate-800">Mostrar mi Teléfono</p>
+                            <p class="text-xs text-secondary">Visible públicamente en tu perfil.</p>
+                        </div>
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" name="mostrar_telefono" id="chk-ver-telefono" class="sr-only peer">
+                            <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:bg-primary peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all"></div>
+                        </label>
+                    </div>
+                </div>
+            </section>
+
+            <div class="flex flex-col md:flex-row items-center justify-between p-6 bg-white rounded-xl border border-slate-200 shadow-lg sticky bottom-6 z-10">
+                <div class="mb-4 md:mb-0 text-center md:text-left">
+                    <p class="font-bold text-slate-800">¿Guardar cambios?</p>
+                    <p class="text-xs text-slate-500">Se actualizará tu perfil inmediatamente.</p>
+                </div>
+                <div class="flex gap-3 w-full md:w-auto">
+                    <button type="button" onclick="window.location.reload()" class="flex-1 md:flex-none px-6 py-2.5 rounded-lg border border-slate-300 font-bold text-slate-600 hover:bg-slate-50 text-sm">Cancelar</button>
+                    <button type="submit" class="flex-1 md:flex-none px-8 py-2.5 rounded-lg bg-primary text-white font-bold shadow-lg hover:bg-[#1e4580] transition-all text-sm flex items-center justify-center gap-2">
+                        <span class="material-symbols-outlined text-lg">save</span> Guardar
+                    </button>
+                </div>
+            </div>
+
+            <div class="mt-8 mb-12">
+                <div class="flex items-center gap-4 p-4 rounded-xl border border-green-100 bg-green-50/50">
+                    <div class="bg-green-100 text-green-600 p-2 rounded-lg"><span class="material-symbols-outlined">security</span></div>
+                    <div>
+                        <p class="text-sm font-bold text-green-900">Consejo de Seguridad</p>
+                        <p class="text-xs text-green-700">Nunca compartas tu contraseña ni datos bancarios. El equipo de Conecta Maracaibo nunca te los pedirá.</p>
+                    </div>
+                </div>
+            </div>
+
+        </form>
+    </main>
+
+    <script src="js/layout.js"></script>
+    <script>
+        // Lógica visual: Cambiar imagen al seleccionar en dropdown
+        const selectAvatar = document.getElementById('select-avatar');
+        const imgPreview = document.getElementById('avatar-preview');
+
+        if(selectAvatar) {
+            selectAvatar.addEventListener('change', (e) => {
+                imgPreview.src = e.target.value;
+            });
+        }
+
+        function toggleTelegramInput() {
+            const esTelegram = document.querySelector('input[name="metodo_contacto"][value="telegram"]').checked;
+            const divTel = document.getElementById('div-telegram');
+            if (esTelegram) divTel.classList.remove('hidden');
+            else divTel.classList.add('hidden');
+        }
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            const token = localStorage.getItem('token');
+            if(!token) { window.location.href='login.html'; return; }
+
+            // 1. CARGAR DATOS
+            try {
+                const res = await fetch('backend/api/usuarios.php?action=perfil', {
+                    headers: {'Authorization': 'Bearer ' + token}
+                });
+                const json = await res.json();
+                
+                if(json.ok) {
+                    const u = json.data;
+
+                    document.getElementById('input-nombre').value = u.nombre || '';
+                    document.getElementById('input-bio').value = u.bio || '';
+                    document.getElementById('input-telefono').value = u.telefono || '';
+                    document.getElementById('input-telegram').value = u.telegram_user || '';
+                    
+                    if(u.comunidad) document.getElementById('input-comunidad').value = u.comunidad;
+
+                    // Avatar: Set select value & image src
+                    const avatarActual = u.foto_perfil || 'assets/avatars/avatar1.png';
+                    selectAvatar.value = avatarActual;
+                    imgPreview.src = avatarActual;
+
+                    // Checkboxes
+                    document.getElementById('chk-compartir').checked = (parseInt(u.compartir_contacto) === 1);
+                    document.getElementById('chk-ver-comunidad').checked = (parseInt(u.mostrar_comunidad) === 1);
+                    document.getElementById('chk-ver-telefono').checked = (parseInt(u.mostrar_telefono) === 1);
+
+                    // Radio Buttons
+                    const metodo = u.metodo_contacto || 'whatsapp';
+                    const radioMetodo = document.querySelector(`input[name="metodo_contacto"][value="${metodo}"]`);
+                    if(radioMetodo) radioMetodo.checked = true;
+                    
+                    toggleTelegramInput();
+                }
+            } catch(e) { console.error(e); }
+
+            // 2. GUARDAR
+            document.getElementById('form-ajustes').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const fd = new FormData(e.target);
+                const btn = e.target.querySelector('button[type="submit"]');
+                const originalText = btn.innerHTML;
+                
+                btn.innerHTML = 'Guardando...';
+                btn.disabled = true;
+
+                try {
+                    const res = await fetch('backend/api/usuarios.php?action=actualizar', {
+                        method: 'POST',
+                        headers: {'Authorization': 'Bearer ' + token},
+                        body: fd
+                    });
+                    const json = await res.json();
+                    
+                    if(json.ok) {
+                        let userLocal = JSON.parse(localStorage.getItem('usuario'));
+                        userLocal = {...userLocal, ...json.usuario};
+                        localStorage.setItem('usuario', JSON.stringify(userLocal));
+                        
+                        alert('¡Datos guardados correctamente!');
+                        window.location.href = 'perfil.html';
+                    } else {
+                        alert('Error: ' + json.msg);
+                    }
+                } catch(e) { console.error(e); alert('Error de conexión'); }
+                finally {
+                    btn.innerHTML = originalText;
+                    btn.disabled = false;
+                }
+            });
+        });
+    </script>
+</body>
+</html>

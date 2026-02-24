@@ -1,0 +1,21 @@
+# Habilitar el motor de reescritura
+RewriteEngine On
+
+# FORZAR que el Header Authorization llegue a PHP (Vital para InfinityFree)
+RewriteCond %{HTTP:Authorization} ^(.*)
+RewriteRule .* - [e=HTTP_AUTHORIZATION:%1]
+
+# Evitar que la gente vea tus archivos sensibles
+<FilesMatch "^\.">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+<FilesMatch "(config|composer)\.(php|json|lock)$">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# Permitir acceso a todo lo demás
+Order allow,deny
+Allow from all

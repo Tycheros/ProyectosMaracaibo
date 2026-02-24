@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html class="light" lang="es">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Detalles del Proyecto - Conecta Maracaibo</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700;900&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#2c5aa0",
+                        "primary-hover": "#1e4580",
+                        "secondary-blue": "#4f7bbf",
+                        "secondary-orange": "#FF9800",
+                        "text-main": "#607D8B",
+                        "background-light": "#f6f8f6",
+                        "background-dark": "#151d15",
+                        "surface-light": "#F5F7FA",
+                    },
+                    fontFamily: { "display": ["Public Sans", "sans-serif"] },
+                },
+            },
+        }
+    </script>
+    <style>
+        body { font-family: 'Public Sans', sans-serif; color: #607D8B; }
+        .text-header { color: #263238; }
+        .hero-overlay { background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.2) 50%, rgba(0,0,0,0.1) 100%); }
+        #ver-mapa { z-index: 0; }
+        dialog[open] { animation: fadeIn 0.3s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+    </style>
+</head>
+<body class="bg-surface-light dark:bg-background-dark font-display min-h-screen flex flex-col">
+    <div id="layout-header"></div>
+    <main class="max-w-7xl mx-auto px-4 md:px-8 w-full mt-24 mb-12 flex-grow">
+        <div class="relative w-full h-[380px] rounded-[2rem] overflow-hidden shadow-xl mb-8 group">
+            <img id="header-bg" alt="Portada Proyecto" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" src="assets/noimage.jpg"/>
+            <div class="absolute inset-0 hero-overlay"></div>
+            <a href="proyectos.html" class="absolute top-6 left-6 bg-white/20 backdrop-blur-md text-white p-2.5 rounded-full hover:bg-white/30 transition border border-white/20">
+                <span class="material-icons-outlined">arrow_back</span>
+            </a>
+            <div class="absolute bottom-0 left-0 right-0 p-8 md:p-10">
+                <div class="flex flex-wrap gap-3 mb-2">
+                    <span id="p-categoria" class="bg-primary text-white px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider shadow-lg">General</span>
+                    <span class="bg-black/30 backdrop-blur-md text-white px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider flex items-center gap-1 border border-white/10">
+                        <span class="material-icons-outlined text-sm">location_on</span> <span id="p-ubicacion">Maracaibo</span>
+                    </span>
+                </div>
+                <h1 id="p-titulo" class="text-3xl md:text-4xl font-black text-white mb-4 leading-tight drop-shadow-md">Cargando...</h1>
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full border-2 border-white overflow-hidden bg-gray-300">
+                        <img id="u-foto" alt="Proponente" class="w-full h-full object-cover" src="assets/avatars/avatar1.png"/>
+                    </div>
+                    <div class="text-white">
+                        <p class="text-[10px] opacity-90 uppercase tracking-widest font-bold">Propuesto por</p>
+                        <p id="u-nombre" class="font-bold text-sm leading-tight">Usuario</p>
+                        <p id="p-fecha" class="text-xs opacity-75 font-light">...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div class="lg:col-span-2 space-y-8">
+                <section class="bg-white dark:bg-background-dark p-8 rounded-3xl shadow-sm border border-gray-100">
+                    <h2 class="text-xl font-bold text-header dark:text-white mb-4 flex items-center gap-2">
+                        <span class="material-icons-outlined text-primary">description</span> Sobre el Proyecto
+                    </h2>
+                    <div class="prose prose-slate dark:prose-invert max-w-none text-text-main leading-relaxed">
+                        <p id="p-descripcion" class="whitespace-pre-line">...</p>
+                    </div>
+                </section>
+                <section id="sec-mapa" class="bg-white dark:bg-background-dark p-8 rounded-3xl shadow-sm border border-gray-100 hidden">
+                    <h2 class="text-xl font-bold text-header dark:text-white mb-2 flex items-center gap-2">
+                        <span class="material-icons-outlined text-primary">map</span> Ubicación Exacta
+                    </h2>
+                    <p id="txt-direccion" class="text-sm text-gray-600 mb-4 font-medium flex items-center gap-2">
+                        <span class="material-icons-outlined text-gray-400">place</span>
+                        <span>...</span>
+                    </p>
+                    <div id="ver-mapa" class="w-full h-64 rounded-2xl z-0 border border-gray-200"></div>
+                </section>
+                <section class="bg-white dark:bg-background-dark p-8 rounded-3xl shadow-sm border border-gray-100">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-xl font-bold text-header dark:text-white flex items-center gap-2">
+                            <span class="material-icons-outlined text-primary">inventory_2</span> Recursos Necesarios
+                        </h2>
+                        <button id="btn-gestionar-recursos" onclick="abrirModalGestion()" class="hidden text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-1.5 rounded-lg font-bold transition flex items-center gap-1">
+                            <span class="material-icons-outlined text-sm">edit_note</span> Registrar Recibido
+                        </button>
+                    </div>
+                    <div class="mb-6">
+                        <div class="flex justify-between text-xs font-bold mb-1 text-gray-500">
+                            <span>Progreso de Recaudación</span>
+                            <span id="txt-progreso-recursos">0%</span>
+                        </div>
+                        <div class="w-full bg-gray-100 rounded-full h-2.5 overflow-hidden">
+                            <div id="bar-progreso-recursos" class="bg-green-500 h-full rounded-full transition-all duration-1000" style="width: 0%"></div>
+                        </div>
+                    </div>
+                    <div id="grid-materiales" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <p class="text-gray-400 italic col-span-full">Cargando lista...</p>
+                    </div>
+                </section>
+                <section id="seccion-cronograma" class="hidden bg-white dark:bg-background-dark p-8 rounded-3xl shadow-sm border border-gray-100">
+                    <div class="flex items-center justify-between mb-6 border-b border-gray-100 pb-4">
+                        <div class="flex items-center gap-3">
+                            <h2 class="text-xl font-black text-gray-900 dark:text-white flex items-center gap-2">
+                                <span class="material-icons-outlined text-primary">engineering</span> Fase de Ejecución
+                            </h2>
+                        </div>
+                        <button id="btn-add-actividad" onclick="document.getElementById('modal-actividad').showModal()" class="hidden bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-2 rounded-lg text-xs font-bold transition flex items-center gap-1">
+                            <span class="material-icons-outlined text-sm">add_task</span> Agregar Hito
+                        </button>
+                    </div>
+                    <p class="text-xs text-gray-500 font-bold uppercase tracking-wider mb-6">Cronograma de Trabajo</p>
+                    <div id="lista-actividades" class="space-y-0 pl-2"></div>
+                </section>
+                <section id="sec-galeria" class="bg-white dark:bg-background-dark p-8 rounded-3xl shadow-sm border border-gray-100 hidden">
+                    <h2 class="text-xl font-bold text-header dark:text-white mb-6 flex items-center gap-2">
+                        <span class="material-icons-outlined text-primary">photo_library</span> Galería del Sitio
+                    </h2>
+                    <div class="grid grid-cols-2 md:grid-cols-3 gap-4" id="galeria-imagenes"></div>
+                </section>
+            </div>
+            <div class="space-y-6">
+                <div class="bg-white dark:bg-background-dark p-6 rounded-3xl shadow-lg border border-primary/10">
+                    <div class="flex justify-between items-center mb-1">
+                        <h3 class="font-bold text-header dark:text-white uppercase text-[10px] tracking-widest">Validación</h3>
+                        <span id="txt-porcentaje" class="text-primary font-black text-3xl">0%</span>
+                    </div>
+                    <div class="w-full bg-gray-100 rounded-full h-3 mb-4 overflow-hidden">
+                        <div id="bar-porcentaje" class="bg-primary h-full rounded-full transition-all duration-1000" style="width: 0%"></div>
+                    </div>
+                    <div class="flex justify-between text-xs text-text-main mb-6 bg-gray-50 p-3 rounded-xl">
+                        <div class="flex flex-col items-center w-1/2 border-r border-gray-200">
+                            <span class="font-bold text-lg text-gray-800" id="num-votos-pos">0</span>
+                            <span class="uppercase tracking-wider text-[9px]">A favor</span>
+                        </div>
+                        <div class="flex flex-col items-center w-1/2">
+                            <span class="font-bold text-lg text-gray-400" id="num-votos-neg">0</span>
+                            <span class="uppercase tracking-wider text-[9px]">En contra</span>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-[1fr_auto] gap-3">
+                        <button id="btn-voto-pos" onclick="votar('positivo')" class="flex items-center justify-center gap-2 bg-gray-900 hover:bg-black text-white py-3.5 px-4 rounded-xl font-bold transition-all shadow-md active:scale-95 group">
+                            <span class="material-icons-outlined group-hover:-translate-y-1 transition-transform">thumb_up</span> Votar a Favor
+                        </button>
+                        <button id="btn-voto-neg" onclick="votar('negativo')" class="flex items-center justify-center bg-white hover:bg-red-50 text-gray-300 hover:text-red-500 py-3.5 px-4 rounded-xl font-bold transition-all border border-gray-200 hover:border-red-200">
+                            <span class="material-icons-outlined">thumb_down</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="bg-primary/5 dark:bg-white/5 p-6 rounded-3xl border border-primary/10">
+                    <h3 class="font-bold text-primary dark:text-white uppercase text-[10px] tracking-widest mb-4 flex items-center gap-2">
+                        <span class="material-icons-outlined text-sm">handshake</span> Participar
+                    </h3>
+                    <div class="space-y-3">
+                        <button onclick="unirse()" id="btn-unirse" class="w-full flex items-center justify-center gap-2 bg-white hover:bg-gray-50 text-gray-700 py-3.5 px-4 rounded-xl font-bold transition-all shadow-sm border border-gray-200">
+                            <span class="material-icons-outlined text-primary">group_add</span> Ser Voluntario
+                        </button>
+                        <button onclick="abrirModalDonacion()" class="w-full flex items-center justify-center gap-2 bg-secondary-orange hover:bg-orange-600 text-white py-3.5 px-4 rounded-xl font-bold transition-all shadow-md active:scale-95">
+                            <span class="material-icons-outlined">inventory_2</span> Donar Insumos
+                        </button>
+                    </div>
+                </div>
+                <div id="panel-dueno" class="hidden bg-white p-6 rounded-3xl shadow-lg border border-gray-100">
+                    <div class="space-y-3">
+                        <button onclick="iniciarProyecto()" class="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold shadow-md shadow-blue-100 transition transform active:scale-95 flex items-center justify-center gap-2">
+                            <span class="material-icons-outlined">rocket_launch</span> Iniciar Ejecución
+                        </button>
+                        <div class="grid grid-cols-2 gap-3">
+                            <button onclick="editarProyecto()" class="py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl font-bold text-xs transition flex items-center justify-center gap-1">
+                                <span class="material-icons-outlined text-sm">edit</span> Editar
+                            </button>
+                            <button onclick="eliminarProyecto()" class="py-2.5 bg-red-50 hover:bg-red-100 text-red-600 rounded-xl font-bold text-xs transition flex items-center justify-center gap-1">
+                                <span class="material-icons-outlined text-sm">delete</span> Eliminar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div id="sec-otros-proyectos" class="bg-white dark:bg-background-dark p-6 rounded-3xl shadow-sm border border-gray-100 hidden">
+                    <h3 class="font-bold text-header dark:text-white uppercase text-[10px] tracking-widest mb-4 border-b border-gray-50 pb-2">
+                        Más de este Proponente
+                    </h3>
+                    <div id="grid-otros" class="flex flex-col gap-4"></div>
+                </div>
+                <div class="p-4 rounded-2xl text-xs text-gray-400 text-center leading-relaxed border border-dashed border-gray-200">
+                    <span class="material-icons-outlined text-lg mb-1 block text-gray-300">info</span>
+                    Este portal gestiona recursos y voluntariado, <br><strong>no dinero en efectivo.</strong>
+                </div>
+            </div>
+        </div>
+    </main>
+    <dialog id="modal-donar" class="p-0 rounded-3xl shadow-2xl backdrop:bg-black/50 w-full max-w-lg bg-transparent border-none">
+        <div class="bg-white rounded-3xl overflow-hidden flex flex-col max-h-[90vh]">
+            <div class="p-6 border-b border-gray-100 flex justify-between items-center bg-orange-50">
+                <h3 class="font-bold text-orange-800 flex items-center gap-2">
+                    <span class="material-icons-outlined">volunteer_activism</span> ¿Qué deseas donar?
+                </h3>
+                <button onclick="document.getElementById('modal-donar').close()" class="w-8 h-8 rounded-full bg-white flex items-center justify-center text-gray-400 hover:text-gray-600">
+                    <span class="material-icons-outlined text-lg">close</span>
+                </button>
+            </div>
+            <div class="p-6 overflow-y-auto">
+                <p class="text-sm text-gray-500 mb-4">Selecciona los materiales de la lista que puedes aportar.</p>
+                <form id="form-donar-proyecto" class="space-y-4">
+                    <div id="lista-check-materiales" class="space-y-3"></div>
+                    <div class="pt-4 border-t border-gray-100">
+                        <label class="block text-xs font-bold text-gray-700 mb-1">Mensaje adicional (Opcional)</label>
+                        <textarea name="mensaje" class="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm" placeholder="Detalles de entrega, horarios, etc."></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="p-6 border-t border-gray-100 bg-gray-50 flex justify-end gap-3">
+                <button onclick="document.getElementById('modal-donar').close()" class="px-6 py-3 text-sm font-bold text-gray-500 hover:bg-gray-200 rounded-xl transition">Cancelar</button>
+                <button onclick="enviarDonacion()" class="px-6 py-3 text-sm font-bold bg-orange-500 hover:bg-orange-600 text-white rounded-xl shadow-lg shadow-orange-200 transition transform active:scale-95 flex items-center gap-2">
+                    Confirmar Donación
+                </button>
+            </div>
+        </div>
+    </dialog>
+    <dialog id="modal-gestion" class="p-0 rounded-3xl shadow-2xl backdrop:bg-black/50 w-full max-w-lg bg-transparent border-none">
+        <div class="bg-white rounded-3xl overflow-hidden flex flex-col max-h-[90vh]">
+            <div class="p-6 border-b border-gray-100 bg-gray-50">
+                <h3 class="font-bold text-gray-800 flex items-center gap-2">
+                    <span class="material-icons-outlined">inventory</span> Registrar Entrega
+                </h3>
+                <p class="text-xs text-gray-500 mt-1">Suma lo que te hayan entregado físicamente.</p>
+            </div>
+            <div class="p-6 overflow-y-auto space-y-4" id="lista-gestion-inputs"></div>
+            <div class="p-6 border-t border-gray-100 flex justify-end gap-3 bg-gray-50">
+                <button onclick="document.getElementById('modal-gestion').close()" class="px-4 py-2 text-sm font-bold text-gray-500 hover:bg-gray-100 rounded-xl transition">Cancelar</button>
+                <button onclick="guardarInventario()" class="px-4 py-2 text-sm font-bold bg-green-600 hover:bg-green-700 text-white rounded-xl shadow-lg transition transform active:scale-95">
+                    Actualizar
+                </button>
+            </div>
+        </div>
+    </dialog>
+    <dialog id="modal-actividad" class="p-0 rounded-3xl shadow-2xl backdrop:bg-black/50 w-full max-w-md bg-transparent border-none">
+        <div class="bg-white rounded-3xl overflow-hidden flex flex-col">
+            <div class="p-6 border-b border-gray-100 bg-gray-50">
+                <h3 class="font-bold text-gray-800 flex items-center gap-2">
+                    <span class="material-icons-outlined">edit_calendar</span> Nuevo Hito
+                </h3>
+            </div>
+            <form id="form-actividad" class="p-6 space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-gray-500 mb-1 uppercase">Título de la actividad</label>
+                    <input name="titulo" type="text" required class="w-full bg-gray-50 border-gray-200 rounded-xl text-sm p-3 focus:ring-primary focus:border-primary" placeholder="Ej: Compra de materiales">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-gray-500 mb-1 uppercase">Descripción</label>
+                    <textarea name="descripcion" rows="2" class="w-full bg-gray-50 border-gray-200 rounded-xl text-sm p-3 focus:ring-primary focus:border-primary" placeholder="Detalles breves..."></textarea>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-gray-500 mb-1 uppercase">Fecha Estimada</label>
+                    <input name="fecha" type="date" required class="w-full bg-gray-50 border-gray-200 rounded-xl text-sm p-3">
+                </div>
+                <div class="pt-2 flex justify-end gap-2">
+                    <button type="button" onclick="document.getElementById('modal-actividad').close()" class="px-4 py-2 text-gray-500 font-bold text-sm hover:bg-gray-100 rounded-lg transition">Cancelar</button>
+                    <button type="submit" class="px-6 py-2 bg-primary hover:bg-primary-hover text-white rounded-xl font-bold text-sm shadow-md transition">Guardar</button>
+                </div>
+            </form>
+        </div>
+    </dialog>
+    <div id="chat-container" class="hidden fixed bottom-6 right-6 z-40 flex flex-col items-end gap-4">
+        <div id="chat-window" class="hidden w-80 md:w-96 bg-white dark:bg-[#1e2329] rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700 overflow-hidden flex flex-col h-[500px] transition-all transform origin-bottom-right scale-95 opacity-0">
+            <div class="bg-primary p-4 flex justify-between items-center text-white">
+                <div class="flex items-center gap-2">
+                    <span class="material-icons-outlined">forum</span>
+                    <h3 class="font-bold text-sm">Equipo del Proyecto</h3>
+                </div>
+                <button onclick="toggleChat()" class="hover:bg-white/20 p-1 rounded-full transition">
+                    <span class="material-icons-outlined text-sm">close</span>
+                </button>
+            </div>
+            <div id="chat-messages" class="flex-1 p-4 overflow-y-auto bg-gray-50 dark:bg-[#151d15] space-y-3 flex flex-col">
+                <p class="text-center text-xs text-gray-400 mt-4">Inicia la conversación.</p>
+            </div>
+            <form id="chat-form" class="p-3 border-t border-gray-100 dark:border-gray-700 bg-white dark:bg-[#1e2329] flex gap-2">
+                <input type="text" id="chat-input" class="flex-1 bg-gray-100 dark:bg-gray-800 border-0 rounded-xl px-4 py-2 text-sm focus:ring-2 focus:ring-primary dark:text-white" placeholder="Escribe un mensaje..." autocomplete="off">
+                <button type="submit" class="bg-primary text-white p-2 rounded-xl hover:bg-primary-hover transition shadow-md flex items-center justify-center">
+                    <span class="material-icons-outlined text-lg">send</span>
+                </button>
+            </form>
+        </div>
+        <button onclick="toggleChat()" id="btn-chat-toggle" class="bg-primary hover:bg-primary-hover text-white w-14 h-14 rounded-full shadow-lg shadow-primary/30 flex items-center justify-center transition-transform hover:scale-110 active:scale-95 group relative">
+            <span class="material-icons-outlined text-2xl group-hover:hidden">chat</span>
+            <span class="material-icons-outlined text-2xl hidden group-hover:block">expand_less</span>
+            <span id="chat-badge" class="hidden absolute top-0 right-0 w-4 h-4 bg-red-500 rounded-full border-2 border-white"></span>
+        </button>
+    </div>
+    <script src="js/layout.js"></script>
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const idProyecto = params.get('id');
+        let proyectoActual = null;
+        let listaMaterialesGlobal = [];
+        let chatInterval = null;
+        let chatAbierto = false;
+        let chatCargando = false;
+        document.addEventListener('DOMContentLoaded', () => {
+            if(!idProyecto) { alert("Proyecto no especificado"); window.location.href = 'proyectos.html'; return; }
+            cargarProyecto();
+        });
+        async function cargarProyecto() {
+            const token = localStorage.getItem('token');
+            const headers = token ? {'Authorization': 'Bearer ' + token} : {};
+            try {
+                const res = await fetch(`backend/api/proyectos.php?action=ver&id=${idProyecto}`, { headers });
+                const json = await res.json();
+                if(json.ok) {
+                    const p = json.proyecto;
+                    proyectoActual = p;
+                    document.getElementById('p-titulo').innerText = p.titulo;
+                    document.getElementById('p-categoria').innerText = p.categoria;
+                    document.getElementById('p-ubicacion').innerText = (p.ubicacion || '').split(',')[0];
+                    if(p.imagen) document.getElementById('header-bg').src = p.imagen;
+                    document.getElementById('u-nombre').innerText = p.nombre_proponente || 'Anónimo';
+                    if(p.foto_perfil) document.getElementById('u-foto').src = p.foto_perfil;
+                    document.getElementById('p-descripcion').innerText = p.descripcion;
+                    if(p.fecha_creacion) {
+                        const dateObj = new Date(p.fecha_creacion);
+                        document.getElementById('p-fecha').innerText = 'Publicado el ' + dateObj.toLocaleDateString('es-ES');
+                    }
+                    if (p.latitud && p.longitud) {
+                        document.getElementById('sec-mapa').classList.remove('hidden');
+                        document.getElementById('txt-direccion').innerText = p.direccion_exacta || p.ubicacion;
+                        setTimeout(() => {
+                            if(!document.getElementById('ver-mapa').hasChildNodes()){
+                                var map = L.map('ver-mapa').setView([p.latitud, p.longitud], 15);
+                                L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', { attribution: 'Tiles &copy; Esri' }).addTo(map);
+                                L.marker([p.latitud, p.longitud]).addTo(map).bindPopup("Ubicación").openPopup();
+                            }
+                        }, 500);
+                    }
+                    if (p.galeria) {
+                        try { 
+                            const galeria = JSON.parse(p.galeria);
+                            if (Array.isArray(galeria) && galeria.length > 0) {
+                                document.getElementById('sec-galeria').classList.remove('hidden');
+                                const container = document.getElementById('galeria-imagenes');
+                                container.innerHTML = galeria.map(img => `
+                                    <div class="aspect-square rounded-xl overflow-hidden bg-gray-100 cursor-pointer hover:opacity-90 shadow-inner" onclick="window.open('${img}', '_blank')">
+                                        <img class="w-full h-full object-cover" src="${img}">
+                                    </div>`).join('');
+                            }
+                        } catch(e) {}
+                    }
+                    const usuarioLocal = localStorage.getItem('usuario');
+                    if (usuarioLocal) {
+                        const u = JSON.parse(usuarioLocal);
+                        const miId = u.id_usuario || u.id; 
+                        if (miId == p.id_usuario) {
+                            document.getElementById('btn-gestionar-recursos').classList.remove('hidden');
+                            if(p.estado === 'recaudacion') {
+                                document.getElementById('panel-dueno').classList.remove('hidden');
+                            }
+                            if(p.estado === 'en_progreso') {
+                                document.getElementById('btn-add-actividad').classList.remove('hidden');
+                            }
+                        }
+                    }
+                    renderMateriales(p.materiales);
+                    updateStats(p);
+                    if(p.es_voluntario > 0) {
+                        const btn = document.getElementById('btn-unirse');
+                        btn.innerHTML = '<span class="material-icons-outlined text-green-500 mr-2">check_circle</span> Inscrito';
+                        btn.className = "w-full flex items-center justify-center gap-2 bg-green-50 text-green-700 py-3.5 px-4 rounded-xl font-bold border border-green-200 cursor-default opacity-90";
+                        btn.removeAttribute('onclick');
+                    }
+                    if (p.estado === 'en_progreso') {
+                        document.getElementById('seccion-cronograma').classList.remove('hidden');
+                        loadCronograma(p.id_proyecto, headers);
+                    }
+                    if(p.id_usuario) cargarOtrosProyectos(p.id_usuario);
+                } else { 
+                    alert("Proyecto no encontrado");
+                    window.location.href = 'proyectos.html'; 
+                }
+            } catch(e) { console.error("Error carga:", e); }
+        }
+        async function iniciarProyecto() {
+            let totalItems = 0;
+            let receivedItems = 0;
+            if (listaMaterialesGlobal.length > 0) {
+                totalItems = listaMaterialesGlobal.reduce((acc, m) => acc + parseInt(m.cantidad), 0);
+                receivedItems = listaMaterialesGlobal.reduce((acc, m) => acc + (parseInt(m.recibido) || 0), 0);
+            }
+            const matProgress = totalItems > 0 ? (receivedItems / totalItems) * 100 : 100;
+            if (matProgress < 100) {
+                if(!confirm(`⚠️ PRECAUCIÓN: Solo has recaudado el ${Math.round(matProgress)}% de los materiales.\n\n¿Estás seguro de que quieres iniciar la ejecución sin todos los recursos?`)) {
+                    return;
+                }
+            }
+            if(!confirm("¿Confirmas iniciar la fase de ejecución?\n\nSe enviará una notificación a todos los voluntarios inscritos.")) return;
+            try {
+                const token = localStorage.getItem('token');
+                const res = await fetch('backend/api/gestion_proyecto.php?action=iniciar', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token},
+                    body: JSON.stringify({ id_proyecto: idProyecto })
+                });
+                const json = await res.json();
+                if(json.ok) {
+                    alert("¡Proyecto iniciado! " + json.msg);
+                    location.reload(); 
+                } else {
+                    alert("Error: " + json.msg);
+                }
+            } catch(e) { console.error(e); }
+        }
+        function editarProyecto() {
+            window.location.href = `crear-proyecto.html?id=${idProyecto}&mode=edit`; 
+        }
+        async function eliminarProyecto() {
+            if(!confirm("⚠️ ¿Estás seguro de que quieres ELIMINAR este proyecto?\n\nEsta acción borrará todos los datos, donaciones y chats asociados. No se puede deshacer.")) return;
+            if(!confirm("Confirmación final: ¿Eliminar definitivamente?")) return;
+            try {
+                const token = localStorage.getItem('token');
+                const res = await fetch(`backend/api/proyectos.php?action=borrar&id=${idProyecto}`, {
+                    method: 'DELETE',
+                    headers: {'Authorization': 'Bearer ' + token}
+                });
+                const json = await res.json();
+                if(json.ok) {
+                    alert("Proyecto eliminado.");
+                    window.location.href = 'proyectos.html';
+                } else {
+                    alert("Error: " + (json.msg || "No se pudo eliminar"));
+                }
+            } catch(e) { console.error(e); }
+        }
+        async function loadCronograma(pid, headers) {
+            try {
+                const res = await fetch(`backend/api/gestion_proyecto.php?action=listar_actividades&id_proyecto=${pid}`, { headers });
+                const json = await res.json();
+                const lista = document.getElementById('lista-actividades');
+                lista.innerHTML = '';
+                if (json.data && json.data.length > 0) {
+                    const uLocal = localStorage.getItem('usuario');
+                    const soyDueño = uLocal && (JSON.parse(uLocal).id_usuario == proyectoActual.id_usuario);
+                    json.data.forEach(act => {
+                        const isDone = act.estado === 'completada';
+                        const color = isDone ? 'bg-green-500' : 'bg-gray-300';
+                        const badge = isDone 
+                            ? '<span class="bg-green-100 text-green-700 text-[10px] font-bold px-2 py-0.5 rounded uppercase border border-green-200">Completado</span>' 
+                            : '<span class="bg-orange-100 text-orange-600 text-[10px] font-bold px-2 py-0.5 rounded uppercase border border-orange-200">Pendiente</span>';
+                        let btnCompletar = '';
+                        if(soyDueño && !isDone) {
+                            btnCompletar = `
+                            <button onclick="completarActividad(${act.id_actividad})" class="mt-3 w-full py-1.5 rounded-lg border border-green-200 text-green-700 font-bold text-xs hover:bg-green-50 transition flex items-center justify-center gap-1">
+                                <span class="material-icons-outlined text-sm">check</span> Marcar Listo
+                            </button>`;
+                        }
+                        lista.innerHTML += `
+                            <div class="flex gap-4 mb-6 relative group">
+                                <div class="absolute left-[9px] top-8 bottom-[-24px] w-0.5 bg-gray-200"></div>
+                                <div class="w-5 h-5 rounded-full ${color} shrink-0 mt-1 border-2 border-white shadow-sm z-10 transition-colors"></div>
+                                <div class="bg-white border border-gray-100 p-4 rounded-xl shadow-sm w-full hover:shadow-md transition">
+                                    <div class="flex justify-between items-start mb-2">
+                                        <h4 class="font-bold text-gray-800">${act.titulo}</h4>
+                                        ${badge}
+                                    </div>
+                                    <p class="text-sm text-gray-500 mb-3 leading-relaxed">${act.descripcion}</p>
+                                    <div class="flex items-center gap-1 text-xs text-blue-600 font-bold bg-blue-50 w-fit px-2 py-1 rounded-lg">
+                                        <span class="material-icons-outlined text-xs">event</span> ${act.fecha_objetivo}
+                                    </div>
+                                    ${btnCompletar}
+                                </div>
+                            </div>`;
+                    });
+                } else {
+                    lista.innerHTML = `<div class="text-center py-10 border border-dashed border-gray-200 rounded-xl bg-gray-50/50"><span class="material-icons-outlined text-gray-300 text-4xl mb-2">calendar_today</span><p class="text-sm text-gray-400 font-medium">Aún no hay actividades planificadas.</p></div>`;
+                }
+            } catch(e) {}
+        }
+        async function completarActividad(idAct) {
+            if(!confirm("¿Marcar esta actividad como completada?")) return;
+            try {
+                const token = localStorage.getItem('token');
+                await fetch('backend/api/gestion_proyecto.php?action=completar_actividad', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token},
+                    body: JSON.stringify({ id_actividad: idAct })
+                });
+                loadCronograma(idProyecto);
+            } catch(e) { console.error(e); }
+        }
+        const formAct = document.getElementById('form-actividad');
+        if(formAct) {
+            formAct.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const fd = new FormData(e.target);
+                const data = Object.fromEntries(fd.entries());
+                data.id_proyecto = idProyecto;
+                try {
+                    const token = localStorage.getItem('token');
+                    const res = await fetch('backend/api/gestion_proyecto.php?action=crear_actividad', {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token},
+                        body: JSON.stringify(data)
+                    });
+                    const json = await res.json();
+                    if(json.ok) {
+                        document.getElementById('modal-actividad').close();
+                        e.target.reset();
+                        loadCronograma(idProyecto);
+                    } else { alert(json.msg); }
+                } catch(e) { console.error(e); }
+            });
+        }
+        function initChat(p) {
+            const usuarioLocal = localStorage.getItem('usuario');
+            if (!usuarioLocal) return;
+            const u = JSON.parse(usuarioLocal);
+            const miId = u.id_usuario || u.id;
+            const esDueño = (miId == p.id_usuario);
+            const esVoluntario = (p.es_voluntario > 0); 
+            if (esDueño || esVoluntario) { document.getElementById('chat-container').classList.remove('hidden'); }
+        }
+        function toggleChat() {
+            const win = document.getElementById('chat-window');
+            const input = document.getElementById('chat-input');
+            if (chatAbierto) {
+                win.classList.add('scale-95', 'opacity-0', 'hidden'); 
+                win.classList.remove('flex');
+                if(chatInterval) clearInterval(chatInterval);
+                chatAbierto = false;
+            } else {
+                win.classList.remove('hidden');
+                setTimeout(() => { win.classList.remove('scale-95', 'opacity-0'); win.classList.add('flex'); }, 10);
+                cargarMensajes();
+                chatInterval = setInterval(cargarMensajes, 4000);
+                chatAbierto = true;
+                setTimeout(() => input.focus(), 100);
+                scrollChat();
+            }
+        }
+        async function cargarMensajes() {
+            if(!idProyecto || chatCargando) return;
+            chatCargando = true;
+            try {
+                const res = await fetch(`backend/api/chat.php?action=listar&id_proyecto=${idProyecto}`, {
+                    headers: {'Authorization': 'Bearer ' + localStorage.getItem('token')}
+                });
+                const json = await res.json();
+                if(json.ok) renderMensajes(json.data);
+            } catch(e) {} finally { chatCargando = false; }
+        }
+        function renderMensajes(mensajes) {
+            const container = document.getElementById('chat-messages');
+            const wasAtBottom = container.scrollTop + container.clientHeight >= container.scrollHeight - 100;
+            container.innerHTML = '';
+            if(!mensajes || mensajes.length === 0) {
+                container.innerHTML = `<div class="flex flex-col items-center justify-center h-full text-gray-400 opacity-60"><span class="material-icons-outlined text-4xl mb-2">forum</span><p class="text-xs">Sin mensajes aún.</p></div>`;
+                return;
+            }
+            let lastUser = null;
+            mensajes.forEach(m => {
+                const esMio = (m.es_mio == 1);
+                let fechaTexto = "";
+                try {
+                    const fechaSafe = m.fecha_envio.replace(/-/g, "/"); 
+                    const date = new Date(fechaSafe);
+                    fechaTexto = `${date.toLocaleDateString('es-ES', { day: 'numeric', month: 'short' })}, ${date.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })}`;
+                } catch(e) { fechaTexto = "Reciente"; }
+                const alignClass = esMio ? 'items-end' : 'items-start';
+                const mostrarNombre = !esMio && (lastUser !== m.id_usuario);
+                let nombreHTML = '';
+                if(mostrarNombre) { nombreHTML = `<a href="perfil.html?id=${m.id_usuario}" class="text-[10px] text-gray-500 font-bold mb-1 ml-1 hover:text-primary hover:underline transition-colors">${m.nombre || 'Usuario'}</a>`; }
+                const bubbleClass = esMio ? 'bg-primary text-white rounded-tr-none' : 'bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200 border border-gray-100 dark:border-gray-600 rounded-tl-none';
+                container.innerHTML += `<div class="flex flex-col ${alignClass} w-full mb-2 animate-[fadeIn_0.2s_ease-out]">${nombreHTML}<div class="${bubbleClass} px-3 py-2 rounded-2xl shadow-sm text-sm break-words max-w-[85%] relative group">${m.mensaje}<div class="text-[9px] opacity-60 text-right mt-1 font-mono tracking-tighter leading-none select-none">${fechaTexto}</div></div></div>`;
+                lastUser = m.id_usuario;
+            });
+            if (wasAtBottom) setTimeout(scrollChat, 50);
+        }
+        function scrollChat() { const container = document.getElementById('chat-messages'); container.scrollTop = container.scrollHeight; }
+        const formChat = document.getElementById('chat-form');
+        if(formChat) {
+            formChat.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const input = document.getElementById('chat-input');
+                const msg = input.value.trim();
+                if(!msg) return;
+                input.value = ''; input.focus();
+                try {
+                    const res = await fetch('backend/api/chat.php?action=enviar', {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + localStorage.getItem('token')},
+                        body: JSON.stringify({ id_proyecto: idProyecto, mensaje: msg })
+                    });
+                    const json = await res.json();
+                    if(json.ok) cargarMensajes(); else alert("Error al enviar: " + json.msg);
+                } catch(e) {}
+            });
+        }
+        function renderMateriales(jsonMateriales) {
+            const gridMat = document.getElementById('grid-materiales');
+            gridMat.innerHTML = '';
+            try { listaMaterialesGlobal = JSON.parse(jsonMateriales); } catch(e) { listaMaterialesGlobal = []; }
+            if (!Array.isArray(listaMaterialesGlobal) || listaMaterialesGlobal.length === 0) {
+                gridMat.innerHTML = '<p class="col-span-full text-center text-gray-400 text-sm">No se requieren recursos específicos.</p>';
+                return;
+            }
+            let totalMeta = 0; let totalRecibido = 0;
+            listaMaterialesGlobal.forEach(m => {
+                const meta = parseInt(m.cantidad) || 0;
+                const recibido = parseInt(m.recibido) || 0;
+                totalMeta += meta; totalRecibido += recibido;
+                const completo = recibido >= meta;
+                const borderClass = completo ? 'border-green-200 bg-green-50' : 'border-gray-100 bg-surface-light';
+                const iconClass = completo ? 'text-green-600 bg-green-100' : 'text-primary bg-blue-50';
+                const icon = completo ? 'check' : 'construction';
+                gridMat.innerHTML += `<div class="flex items-center p-3 ${borderClass} border rounded-2xl transition"><div class="w-8 h-8 rounded-full ${iconClass} flex items-center justify-center mr-3 shrink-0"><span class="material-icons-outlined text-sm">${icon}</span></div><div class="w-full"><div class="flex justify-between items-center mb-1"><p class="font-bold text-gray-800 text-sm">${m.item}</p><span class="text-xs font-bold ${completo ? 'text-green-600' : 'text-orange-500'}">${recibido} / ${meta}</span></div><div class="w-full bg-gray-200 rounded-full h-1.5"><div class="bg-primary h-1.5 rounded-full transition-all" style="width: ${Math.min((recibido/meta)*100, 100)}%"></div></div></div></div>`;
+            });
+            const pct = totalMeta > 0 ? Math.round((totalRecibido / totalMeta) * 100) : 0;
+            document.getElementById('txt-progreso-recursos').innerText = pct + '%';
+            document.getElementById('bar-progreso-recursos').style.width = pct + '%';
+        }
+        function updateStats(p) {
+            document.getElementById('txt-porcentaje').innerText = (p.porcentaje_aprobacion||0) + '%';
+            document.getElementById('bar-porcentaje').style.width = (p.porcentaje_aprobacion||0) + '%';
+            document.getElementById('num-votos-pos').innerText = p.votos_positivos||0;
+            document.getElementById('num-votos-neg').innerText = p.votos_negativos||0;
+            const btnPos = document.getElementById('btn-voto-pos');
+            const btnNeg = document.getElementById('btn-voto-neg');
+            const basePos = "flex items-center justify-center gap-2 py-3.5 px-4 rounded-xl font-bold transition-all shadow-md active:scale-95 group";
+            const baseNeg = "flex items-center justify-center py-3.5 px-4 rounded-xl font-bold transition-all border active:scale-95";
+            if(p.mi_voto === 'positivo') { btnPos.className = basePos + " bg-green-600 hover:bg-green-700 text-white ring-2 ring-green-200"; btnNeg.className = baseNeg + " bg-white text-gray-300 border-gray-200 hover:text-red-500"; }
+            else if(p.mi_voto === 'negativo') { btnPos.className = basePos + " bg-gray-900 hover:bg-black text-white"; btnNeg.className = baseNeg + " bg-red-500 text-white border-red-500 ring-2 ring-red-200"; }
+            else { btnPos.className = basePos + " bg-gray-900 hover:bg-black text-white"; btnNeg.className = baseNeg + " bg-white text-gray-300 border-gray-200 hover:text-red-500 hover:border-red-200"; }
+        }
+    </script>
+</body>
+</html>
